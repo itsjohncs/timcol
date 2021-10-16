@@ -7,6 +7,8 @@ if [[ -z ${TIMCOL_HOME-} ]]; then
     exit 1
 fi
 
+SCRIPT_DIR="$( cd "$(dirname "$(greadlink -f "${BASH_SOURCE[0]}")")"; pwd -P )"
+
 export LEDGER_FILE="$TIMCOL_HOME/ledger.dat"
 
 function usage {
@@ -38,9 +40,7 @@ case ${1-} in
             echo "NOTICE: Task is pending"
         fi
 
-        ledger bal --force-color
-        echo
-        tac "$LEDGER_FILE" | head -n 10
+        "$SCRIPT_DIR/print_log.py" < "$LEDGER_FILE"
         ;;
 
     stop)
