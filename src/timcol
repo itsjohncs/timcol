@@ -85,10 +85,17 @@ case ${1-} in
         ;;
 
     shell)
+        if [[ ${TIMCOL_SHELL-} = yes ]]; then
+            echo "FATAL: You're already in the timcol shell."
+            exit 1
+        fi
+
         (
             export PATH="$SCRIPT_DIR/shell-bin:$PATH"
             export TIMCOL_REPO="$SCRIPT_DIR/.."
             export TIMCOL_HOME="${TIMCOL_HOME-$1}"
+            export TIMCOL_SHELL=yes
+            export TIMCOL_UPDATE_HARDSTATUS=yes
             screen -c "$SCRIPT_DIR/screenrc"
         )
         ;;
