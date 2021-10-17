@@ -7,7 +7,20 @@ if [[ -z ${TIMCOL_HOME-} ]]; then
     exit 1
 fi
 
-SCRIPT_DIR="$( cd "$(dirname "$(greadlink -f "${BASH_SOURCE[0]}")")"; pwd -P )"
+function get_script_dir {
+    (
+        local CUR="${BASH_SOURCE[0]}"
+        while [[ -L $CUR ]]; do
+            cd "$(dirname "$CUR")"
+            cd "$(pwd -P)"
+            CUR="$(readlink "$CUR")"
+        done
+        CUR="$(realpath "$CUR")"
+
+        ( cd "$(dirname "$CUR")"; pwd -P )
+    )
+
+}
 
 export LEDGER_FILE="$TIMCOL_HOME/ledger.dat"
 
@@ -40,7 +53,7 @@ case ${1-} in
             echo "NOTICE: Task is pending"
         fi
 
-        "$SCRIPT_DIR/print_log.py" < "$LEDGER_FILE"
+        "$(get_script_dir)/print_log.py" < "$LEDGER_FILE"
         ;;
 
     stop)
