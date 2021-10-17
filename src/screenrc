@@ -1,14 +1,4 @@
 chdir "$TIMCOL_HOME"
-screen -f -t "Status" watch -c log status
-split
-focus
-screen -f -t "Capture Log" bash -c '$TIMCOL_REPO/src/screen-capture.sh'
-split
-focus
-screen -f -t "Shell" bash -c 'bash --rcfile "$HOME/.bash_profile"; echo "NOTICE: Quit screen with Ctrl+A, :quit"; sleep 60'
-
-focus
-resize 20
-focus
-resize 4
-focus
+hardstatus alwayslastline "%h"
+screen -f bash --rcfile "$HOME/.bash_profile"
+exec :.. bash $TIMCOL_REPO/src/shell-helper.sh

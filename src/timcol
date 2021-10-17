@@ -22,6 +22,8 @@ function get_script_dir {
 
 }
 
+SCRIPT_DIR="$(get_script_dir)"
+
 export LEDGER_FILE="$TIMCOL_HOME/ledger.dat"
 
 function usage {
@@ -32,6 +34,7 @@ function usage {
     echo "  stop"
     echo "  status"
     echo "  shell"
+    echo "  edit"
 }
 
 function last_directive {
@@ -54,7 +57,7 @@ case ${1-} in
             echo "NOTICE: Task is pending"
         fi
 
-        "$(get_script_dir)/print_log.py" < "$LEDGER_FILE"
+        "$SCRIPT_DIR/print_log.py" < "$LEDGER_FILE"
         ;;
 
     stop)
@@ -77,7 +80,6 @@ case ${1-} in
             echo "FATAL: Unknown account $2"
             exit 1
         fi
-
 
         echo "i $(get_timestamp) $2  $3" >> "$LEDGER_FILE"
         ;;
