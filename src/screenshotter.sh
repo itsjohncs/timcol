@@ -50,9 +50,24 @@ function current_status {
     printf "%s" "${STATUS:-timcol}"
 }
 
+function handle_update_status_signal {
+    if [[ -n ${SCREENSHOT_STATUS} ]]; then
+        printf "%b" "\33_$(current_status) -- $(get_account_balances) -- $SCREENSHOT_STATUS\33\\"
+    else
+        printf "%b" "\33_$(current_status) -- $(get_account_balances)\33\\"
+    fi
+}
+trap handle_update_status_signal USR1
+
 printf "%b" "\33_$(current_status) -- $(get_account_balances)\33\\"
 while :; do
-    sleep 60
+    SLEEP_UNTIL=$(( "$(date +%s)" + 60 ))
+    while [[ "$(date +%s)" -lt $SLEEP_UNTIL ]]; do
+        # Use small sleep steps so we can respond to the USR1 signal in a
+        # timely fashion
+        sleep 0.5
+    done
+
     SCREENSHOT_STATUS="$(record_screenshot)"
     printf "%b" "\33_$(current_status) -- $(get_account_balances) -- $SCREENSHOT_STATUS\33\\"
 done

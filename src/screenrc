@@ -1,4 +1,3 @@
 chdir "$TIMCOL_HOME"
 hardstatus alwayslastline "%h"
-screen -f bash --rcfile "$HOME/.bash_profile"
-exec :.. bash $TIMCOL_REPO/src/shell-helper.sh
+screen -f bash --rcfile "$TIMCOL_REPO/src/shellrc.sh"

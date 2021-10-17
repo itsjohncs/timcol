@@ -47,6 +47,14 @@ function get_timestamp {
     date +"%Y/%m/%d %H:%M:%S"
 }
 
+function maybe_update_hardstatus {
+    if [[ ${TIMCOL_UPDATE_HARDSTATUS-} = yes &&
+            -n $TIMCOL_SHELL_HELPER_PID ]] &&
+            ! kill -SIGUSR1 "$TIMCOL_SHELL_HELPER_PID"; then
+        echo "WARNING: Could not send update signal to shell helper."
+    fi
+}
+
 case ${1-} in
 
     status)
@@ -67,6 +75,8 @@ case ${1-} in
         fi
 
         echo "o $(get_timestamp)" >> "$TIMCOL_HOME/ledger.dat"
+
+        maybe_update_hardstatus
         ;;
 
     start)
@@ -82,6 +92,8 @@ case ${1-} in
         fi
 
         echo "i $(get_timestamp) $2  $3" >> "$LEDGER_FILE"
+
+        maybe_update_hardstatus
         ;;
 
     shell)
