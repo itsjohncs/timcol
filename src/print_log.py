@@ -92,11 +92,13 @@ def print_register(logs):
 
         pretty_timestamp = datetime.datetime.strftime(
             i.start_timestamp, "%h %d @ %I:%M %p")
-        minutes = i.duration.total_seconds() / 60
+
+        seconds = i.duration.total_seconds()
+        pretty_duration = f"{seconds // 60:.0f}m.{seconds % 60:.0f}s"
 
         status = " *" if i.is_cleared else ""
         maybe_note = f" ({i.note.strip()})" if i.note else ""
-        print(f"{pretty_timestamp}{status}\t{minutes:.1f}m\t{i.account}: "
+        print(f"{pretty_timestamp}{status}\t{pretty_duration}\t{i.account}: "
               f"{i.task}{maybe_note}")
 
     total_time_in_hours = total_time.total_seconds() / 60 ** 2
