@@ -124,6 +124,7 @@ case ${1-} in
 
     edit)
         $EDITOR "$LEDGER_FILE"
+        maybe_update_hardstatus
         ;;
 
     *)
