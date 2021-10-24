@@ -1,3 +1,3 @@
 source "$HOME/.bash_profile"
-"$TIMCOL_REPO/src/timcol-shell-helper.sh" &
+"$TIMCOL_REPO/src/screenshotter.sh" &
 export TIMCOL_SHELL_HELPER_PID="$!"
