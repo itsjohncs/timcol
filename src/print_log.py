@@ -103,15 +103,8 @@ def print_register(logs):
     print(f"TOTAL TIME: {total_time_in_hours:.2f}h")
 
 
-TransactionOptions = collections.namedtuple("TransactionOptions", [
-    "hourly_rate",
-
-    # The account that we will deduct time from.
-    "income_account",
-])
-
-
-def print_transactions(logs, options):
+def print_transactions(logs, *, default_hourly_rate, income_account,
+                       account_rates):
     """Prints a Ledger transaction for each `Log`."""
     for i in logs:
         date_str = datetime.datetime.strftime(i.start_timestamp, "%Y/%m/%d")
@@ -129,15 +122,45 @@ def print_transactions(logs, options):
             i.start_timestamp + i.duration, "%Y/%m/%d %H:%M:%S")
         print(f"    ; CheckOut: {checkout_timestamp}")
 
+        rate = default_hourly_rate
+        if i.account in account_rates:
+            rate = account_rates[i.account]
+        if rate is None:
+            raise RuntimeError(f"No rate found for account {i.account}")
+
         seconds = i.duration.total_seconds()
         hours = i.duration.total_seconds() / 60 ** 2
-
-        print(f"    {i.account}  ${hours * options.hourly_rate:.2f}")
-        print(f"    {options.income_account}"
-              f"  {-hours:.4f} HOUR {{=${options.hourly_rate}}}"
-              f" @ ${options.hourly_rate}"
+        print(f"    {i.account}  ${hours * rate:.2f}")
+        print(f"    {income_account}"
+              f"  {-hours:.4f} HOUR {{=${rate}}}"
+              f" @ ${rate}"
               f"  ; {seconds // 60:.0f}m and {seconds % 60:.0f}s")
         print()
+
+
+ACCOUNT_RE = re.compile(r"^account (.+?)$(?:\n    ; Rate: (.+?)$|\n    .+?$)+",
+                        re.MULTILINE)
+
+
+def get_account_rates(ledger_as_str):
+    """Gets the per-account rates defined in the Ledger file.
+
+    A per-account rate can be defined alongside the account definition,
+    like so:
+
+        account Best Client
+            ; Rate: 20
+    """
+    account_rates = {}
+    for match in ACCOUNT_RE.finditer(ledger_as_str):
+        try:
+            account_rates[match.group(1)] = float(match.group(2))
+        except ValueError as e:
+            raise RuntimeError(
+                f"Expected float for Rate of account {match.group(1)}, got "
+                f"{match.group(2)}") from e
+
+    return account_rates
 
 
 def parse_args(args=sys.argv[1:]):
@@ -156,18 +179,20 @@ def parse_args(args=sys.argv[1:]):
         "-a", "--income-account", default="Income:Billable Hours",
         help="Account to deduct time from.")
     transactions_parser.add_argument(
-        "-r", "--rate", required=True, type=float,
-        help="Hourly rate to bill. Ex: 100")
+        "-r", "--rate", type=float,
+        help="Hourly rate to bill if not specified.")
 
     return parser.parse_args(args)
+
 
 if __name__ == "__main__":
     parsed_args = parse_args()
     if parsed_args.format == "register":
         print_register(parse(lex(sys.stdin)))
     elif parsed_args.format == "transactions":
+        all_input = sys.stdin.read()
         print_transactions(
-            parse(lex(sys.stdin)),
-            TransactionOptions(
-                income_account=parsed_args.income_account,
-                hourly_rate=parsed_args.rate))
+            parse(lex(all_input.splitlines(True))),
+            income_account=parsed_args.income_account,
+            default_hourly_rate=parsed_args.rate,
+            account_rates=get_account_rates(all_input))
