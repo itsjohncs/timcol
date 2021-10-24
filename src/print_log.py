@@ -103,6 +103,9 @@ def print_register(logs):
     print(f"TOTAL TIME: {total_time_in_hours:.2f}h")
 
 
+RATE_TAG_RE = re.compile(r"(?:^|\s)Rate: ([^\s;]+)")
+
+
 def print_transactions(logs, *, default_hourly_rate, income_account,
                        account_rates):
     """Prints a Ledger transaction for each `Log`."""
@@ -123,8 +126,11 @@ def print_transactions(logs, *, default_hourly_rate, income_account,
         print(f"    ; CheckOut: {checkout_timestamp}")
 
         rate = default_hourly_rate
-        if i.account in account_rates:
+        if i.note and RATE_TAG_RE.search(i.note):
+            rate = float(RATE_TAG_RE.search(i.note).group(1))
+        elif i.account in account_rates:
             rate = account_rates[i.account]
+
         if rate is None:
             raise RuntimeError(f"No rate found for account {i.account}")
 
