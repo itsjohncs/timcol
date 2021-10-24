@@ -30,16 +30,17 @@ function usage {
     echo "USAGE: $0 <command>"
     echo
     echo "COMMANDS"
+    echo "  shell"
     echo "  start ACCOUNT TASK_DESCRIPTION"
     echo "  stop"
-    echo "  status"
-    echo "  shell"
     echo "  edit"
+    echo "  register"
+    echo "  transactions"
 }
 
 function last_directive {
     if [[ -f $LEDGER_FILE ]]; then
-        printf "%s" "$(grep -o "^[io]" "$LEDGER_FILE" | tail -n 1)"
+        printf "%s" "$(grep -o "^[ioO]" "$LEDGER_FILE" | tail -n 1)"
     fi
 }
 
@@ -57,7 +58,7 @@ function maybe_update_hardstatus {
 
 case ${1-} in
 
-    status)
+    register | reg)
         if [[ ! -f $LEDGER_FILE ]]; then
             echo "NOTICE: No ledger file found."
             exit 0
@@ -65,7 +66,16 @@ case ${1-} in
             echo "NOTICE: Task is pending"
         fi
 
-        "$SCRIPT_DIR/print_log.py" < "$LEDGER_FILE"
+        "$SCRIPT_DIR/print_log.py" register < "$LEDGER_FILE"
+        ;;
+
+    transactions)
+        if [[ ! -f $LEDGER_FILE ]]; then
+            echo "NOTICE: No ledger file found."
+            exit 0
+        fi
+
+        "$SCRIPT_DIR/print_log.py" transactions "${@:2}" < "$LEDGER_FILE"
         ;;
 
     stop)
