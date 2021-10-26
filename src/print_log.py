@@ -3,6 +3,7 @@
 import argparse
 import collections
 import datetime
+import json
 import re
 import sys
 
@@ -25,6 +26,12 @@ def lex(ledger_file):
     One checkin or checkout will be one event. No attempt is made to pair them
     up yet. Any line with unrecognized syntax will be ignored.
     """
+    def strip_or_none(val):
+        if val is None:
+            return None
+        else:
+            return val.strip()
+
     for i in ledger_file:
         checkin_match = CHECKIN_RE.match(i)
         if checkin_match:
@@ -34,7 +41,7 @@ def lex(ledger_file):
                     checkin_match.group(1), "%Y/%m/%d %H:%M:%S"),
                 account=checkin_match.group(2),
                 task=checkin_match.group(3),
-                note=checkin_match.group(4),
+                note=strip_or_none(checkin_match.group(4)),
                 cleared=None)
             continue
 
@@ -105,6 +112,25 @@ def print_register(logs):
     print(f"TOTAL TIME: {total_time_in_hours:.2f}h")
 
 
+def print_json(logs):
+    """Prints a JSON object for each log."""
+    print("[")
+
+    for i in logs:
+        serialized = {
+            "start_timestamp": i.start_timestamp.timestamp(),
+            "duration": i.duration.total_seconds(),
+            "account": i.account,
+            "task": i.task,
+            "note": i.note,
+            "is_cleared": i.is_cleared,
+        }
+        json.dump(serialized, sys.stdout, sort_keys=True)
+        print(",")
+
+    print("]")
+
+
 RATE_TAG_RE = re.compile(r"(?:^|\s)Rate: ([^\s;]+)")
 
 
@@ -117,7 +143,7 @@ def print_transactions(logs, *, default_hourly_rate, income_account,
         print(f"{date_str}{status} {i.task}")
 
         if i.note:
-            print(f"    ;{i.note}")
+            print(f"    ; {i.note}")
         
         checkin_timestamp = datetime.datetime.strftime(
             i.start_timestamp, "%Y/%m/%d %H:%M:%S")
@@ -171,12 +197,13 @@ def get_account_rates(ledger_as_str):
     return account_rates
 
 
-def parse_args(args=sys.argv[1:]):
+def parse_args(args):
     parser = argparse.ArgumentParser(description="Prints time entries.")
 
     subparsers = parser.add_subparsers(title="FORMATS", dest="format")
 
     subparsers.add_parser("register", help="Human friendly format.")
+    subparsers.add_parser("json")
 
     # create the parser for the "b" command
     transactions_parser = subparsers.add_parser(
@@ -194,7 +221,7 @@ def parse_args(args=sys.argv[1:]):
 
 
 if __name__ == "__main__":
-    parsed_args = parse_args()
+    parsed_args = parse_args(sys.argv[1:])
     if parsed_args.format == "register":
         print_register(parse(lex(sys.stdin)))
     elif parsed_args.format == "transactions":
@@ -204,3 +231,5 @@ if __name__ == "__main__":
             income_account=parsed_args.income_account,
             default_hourly_rate=parsed_args.rate,
             account_rates=get_account_rates(all_input))
+    elif parsed_args.format == "json":
+        print_json(parse(lex(sys.stdin)))

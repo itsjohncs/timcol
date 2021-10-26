@@ -36,6 +36,7 @@ function usage {
     echo "  edit"
     echo "  register"
     echo "  transactions"
+    echo "  json"
 }
 
 function last_directive {
@@ -69,13 +70,13 @@ case ${1-} in
         "$SCRIPT_DIR/print_log.py" register < "$LEDGER_FILE"
         ;;
 
-    transactions)
+    transactions | json)
         if [[ ! -f $LEDGER_FILE ]]; then
             echo "NOTICE: No ledger file found."
             exit 0
         fi
 
-        "$SCRIPT_DIR/print_log.py" transactions "${@:2}" < "$LEDGER_FILE"
+        "$SCRIPT_DIR/print_log.py" "$1" "${@:2}" < "$LEDGER_FILE"
         ;;
 
     stop)
