@@ -140,8 +140,8 @@ def print_transactions(logs, *, default_hourly_rate, income_account,
         hours = i.duration.total_seconds() / 60 ** 2
         print(f"    {i.account}  ${hours * rate:.2f}")
         print(f"    {income_account}"
-              f"  {-hours:.4f} HOUR {{=${rate:.2f}}}"
-              f" @ ${rate:.2f}"
+              f"  {-hours:.4f} HOUR"
+              f" @ =${rate:.2f}"
               f"  ; {seconds // 60:.0f}m and {seconds % 60:.0f}s")
         print()
 
