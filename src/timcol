@@ -35,7 +35,7 @@ function usage {
     echo "  stop"
     echo "  edit"
     echo "  register"
-    echo "  transactions"
+    echo "  csv"
     echo "  json"
 }
 
@@ -70,7 +70,7 @@ case ${1-} in
         "$SCRIPT_DIR/print_log.py" register < "$LEDGER_FILE"
         ;;
 
-    transactions | json)
+    csv | json)
         if [[ ! -f $LEDGER_FILE ]]; then
             echo "NOTICE: No ledger file found."
             exit 0

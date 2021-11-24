@@ -2,6 +2,7 @@
 
 import argparse
 import collections
+import csv
 import datetime
 import json
 import re
@@ -142,24 +143,24 @@ def print_json(logs):
 RATE_TAG_RE = re.compile(r"(?:^|\s)Rate: ([^\s;]+)")
 
 
-def print_transactions(logs, *, default_hourly_rate, income_account,
-                       account_rates):
+def print_transactions(logs, *, default_hourly_rate, account_rates,
+                       only_uncleared):
     """Prints a Ledger transaction for each `Log`."""
+    writer = csv.DictWriter(sys.stdout, fieldnames=[
+        "Date",
+        "Duration",
+        "Rate",
+        "Cost",
+        "Description",
+    ])
+    writer.writeheader()
+
+    total_cost = 0
     for i in logs:
-        date_str = datetime.datetime.strftime(i.start_timestamp, "%Y/%m/%d")
-        status = " *" if i.is_cleared else ""
-        print(f"{date_str}{status} {i.task}")
+        if only_uncleared and i.is_cleared:
+            continue
 
-        if i.note:
-            print(f"    ; {i.note}")
-
-        checkin_timestamp = datetime.datetime.strftime(
-            i.start_timestamp, "%Y/%m/%d %H:%M:%S")
-        print(f"    ; CheckIn: {checkin_timestamp}")
-
-        checkout_timestamp = datetime.datetime.strftime(
-            i.start_timestamp + i.duration, "%Y/%m/%d %H:%M:%S")
-        print(f"    ; CheckOut: {checkout_timestamp}")
+        seconds = i.duration.total_seconds()
 
         rate = default_hourly_rate
         if i.note and RATE_TAG_RE.search(i.note):
@@ -167,17 +168,22 @@ def print_transactions(logs, *, default_hourly_rate, income_account,
         elif i.account in account_rates:
             rate = account_rates[i.account]
 
-        if rate is None:
-            raise RuntimeError(f"No rate found for account {i.account}")
-
-        seconds = i.duration.total_seconds()
         hours = i.duration.total_seconds() / 60 ** 2
-        print(f"    {i.account}  ${hours * rate:.2f}")
-        print(f"    {income_account}"
-              f"  {-hours:.4f} HOUR"
-              f" @ =${rate:.2f}"
-              f"  ; {seconds // 60:.0f}m and {seconds % 60:.0f}s")
-        print()
+        cost = hours * rate
+        total_cost += cost
+
+        writer.writerow({
+            "Date": datetime.datetime.strftime(i.start_timestamp, "%Y/%m/%d"),
+            "Duration": f"{seconds // 60:.0f}:{seconds % 60:02.0f}",
+            "Rate": f"${rate:.2f}",
+            "Cost": f"${cost:.2f}",
+            "Description": i.task,
+        })
+
+    writer.writerow({
+        "Cost": f"${total_cost:.2f}",
+        "Description": "TOTAL COST",
+    })
 
 
 ACCOUNT_RE = re.compile(r"^account (.+?)$(?:\n    ; Rate: (.+?)$|\n    .+?$)+",
@@ -212,18 +218,13 @@ def parse_args(args):
 
     subparsers.add_parser("register", help="Human friendly format.")
     subparsers.add_parser("json")
-
-    # create the parser for the "b" command
-    transactions_parser = subparsers.add_parser(
-        "transactions", help="Ledger transactions.")
-
-
-    transactions_parser.add_argument(
-        "-a", "--income-account", default="Income:Billable Hours",
-        help="Account to deduct time from.")
-    transactions_parser.add_argument(
+    csv_parser = subparsers.add_parser("csv")
+    csv_parser.add_argument(
         "-r", "--rate", type=float,
         help="Hourly rate to bill if not specified.")
+    csv_parser.add_argument(
+        "--only-uncleared", action="store_true",
+        help="Ignore cleared transactions.")
 
     return parser.parse_args(args)
 
@@ -232,12 +233,12 @@ if __name__ == "__main__":
     parsed_args = parse_args(sys.argv[1:])
     if parsed_args.format == "register":
         print_register(parse(lex(sys.stdin)))
-    elif parsed_args.format == "transactions":
+    elif parsed_args.format == "csv":
         all_input = sys.stdin.read()
         print_transactions(
             parse(lex(all_input.splitlines(True))),
-            income_account=parsed_args.income_account,
             default_hourly_rate=parsed_args.rate,
+            only_uncleared=parsed_args.only_uncleared,
             account_rates=get_account_rates(all_input))
     elif parsed_args.format == "json":
         print_json(parse(lex(sys.stdin)))
