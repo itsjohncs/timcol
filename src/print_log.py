@@ -29,8 +29,8 @@ def lex(ledger_file):
     def strip_or_none(val):
         if val is None:
             return None
-        else:
-            return val.strip()
+
+        return val.strip()
 
     for i in ledger_file:
         checkin_match = CHECKIN_RE.match(i)
@@ -152,7 +152,7 @@ def print_transactions(logs, *, default_hourly_rate, income_account,
 
         if i.note:
             print(f"    ; {i.note}")
-        
+
         checkin_timestamp = datetime.datetime.strftime(
             i.start_timestamp, "%Y/%m/%d %H:%M:%S")
         print(f"    ; CheckIn: {checkin_timestamp}")
@@ -197,10 +197,10 @@ def get_account_rates(ledger_as_str):
     for match in ACCOUNT_RE.finditer(ledger_as_str):
         try:
             account_rates[match.group(1)] = float(match.group(2))
-        except ValueError as e:
+        except ValueError as err:
             raise RuntimeError(
                 f"Expected float for Rate of account {match.group(1)}, got "
-                f"{match.group(2)}") from e
+                f"{match.group(2)}") from err
 
     return account_rates
 
