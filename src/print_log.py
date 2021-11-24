@@ -94,8 +94,12 @@ def parse(events):
 def print_register(logs):
     """Prints a human readable summary of `logs`."""
     total_time = datetime.timedelta(0)
+    total_uncleared_time = datetime.timedelta(0)
     for i in logs:
         total_time += i.duration
+
+        if not i.is_cleared:
+            total_uncleared_time += i.duration
 
         pretty_timestamp = datetime.datetime.strftime(
             i.start_timestamp, "%h %d @ %I:%M %p")
@@ -107,6 +111,10 @@ def print_register(logs):
         maybe_note = f" ({i.note.strip()})" if i.note else ""
         print(f"{pretty_timestamp}{status}\t{pretty_duration}\t{i.account}: "
               f"{i.task}{maybe_note}")
+
+    total_uncleared_time_in_hours = (
+        total_uncleared_time.total_seconds() / 60 ** 2)
+    print(f"TOTAL UNCLEARED TIME: {total_uncleared_time_in_hours:.2f}h")
 
     total_time_in_hours = total_time.total_seconds() / 60 ** 2
     print(f"TOTAL TIME: {total_time_in_hours:.2f}h")
