@@ -174,7 +174,7 @@ def print_transactions(logs, *, default_hourly_rate, account_rates,
 
         writer.writerow({
             "Date": datetime.datetime.strftime(i.start_timestamp, "%Y/%m/%d"),
-            "Duration": f"{seconds // 60:.0f}:{seconds % 60:02.0f}",
+            "Duration": f"{seconds // 60 // 60:.0f}:{(seconds // 60) % 60:.0f}:{seconds % 60:02.0f}",
             "Rate": f"${rate:.2f}",
             "Cost": f"${cost:.2f}",
             "Description": i.task,
