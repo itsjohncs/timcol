@@ -6,24 +6,15 @@ import re
 
 class Event:
     CHECKIN_RE = re.compile(
-        r"^i ([^ ]+ [^ ]+) (.+?)(?:  ([^;]*?)(?:  ;(.*?))?)?$", re.MULTILINE
+        r"^i ([^ ]+ [^ ]+ (?:AM|PM)) (.+?)  (.+)$", re.MULTILINE
     )
-    CHECKOUT_RE = re.compile(r"^([oO]) ([^ ]+? [^ ]+?)$", re.MULTILINE)
+    CHECKOUT_RE = re.compile(r"^o ([^ ]+ [^ ]+ (?:AM|PM))$", re.MULTILINE)
 
-    def __init__(self, *, is_start, timestamp, account, task, note, cleared):
+    def __init__(self, *, is_start, timestamp, account, task):
         self.is_start = is_start
         self.timestamp = timestamp
         self.account = account
         self.task = task
-        self.note = note
-        self.cleared = cleared
-
-    @staticmethod
-    def _strip_or_none(val):
-        if val is None:
-            return None
-
-        return val.strip()
 
     @classmethod
     def from_string(cls, string):
@@ -32,12 +23,10 @@ class Event:
             return Event(
                 is_start=True,
                 timestamp=datetime.datetime.strptime(
-                    checkin_match.group(1), "%Y/%m/%d %H:%M:%S"
+                    checkin_match.group(1), "%Y/%m/%d %I:%M:%S %p"
                 ),
                 account=checkin_match.group(2),
                 task=checkin_match.group(3),
-                note=cls._strip_or_none(checkin_match.group(4)),
-                cleared=None,
             )
 
         checkout_match = cls.CHECKOUT_RE.match(string)
@@ -45,12 +34,10 @@ class Event:
             return Event(
                 is_start=False,
                 timestamp=datetime.datetime.strptime(
-                    checkout_match.group(2), "%Y/%m/%d %H:%M:%S"
+                    checkout_match.group(1), "%Y/%m/%d %I:%M:%S %p"
                 ),
                 account=None,
                 task=None,
-                note=None,
-                cleared=checkout_match.group(1) == "O",
             )
 
         return None
@@ -69,15 +56,11 @@ def events_from_lines(lines):
 
 
 class Log:
-    def __init__(
-        self, *, start_timestamp, duration, account, task, note, is_cleared
-    ):
+    def __init__(self, *, start_timestamp, duration, account, task):
         self.start_timestamp = start_timestamp
         self.duration = duration
         self.account = account
         self.task = task
-        self.note = note
-        self.is_cleared = is_cleared
 
     @classmethod
     def from_event_pair(cls, checkin, checkout):
@@ -89,8 +72,6 @@ class Log:
             duration=checkout.timestamp - checkin.timestamp,
             account=checkin.account,
             task=checkin.task,
-            note=checkin.note,
-            is_cleared=checkout.cleared,
         )
 
 

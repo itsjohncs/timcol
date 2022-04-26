@@ -13,12 +13,8 @@ import log_parser
 def print_register(logs):
     """Prints a human readable summary of `logs`."""
     total_time = datetime.timedelta(0)
-    total_uncleared_time = datetime.timedelta(0)
     for i in logs:
         total_time += i.duration
-
-        if not i.is_cleared:
-            total_uncleared_time += i.duration
 
         pretty_timestamp = datetime.datetime.strftime(
             i.start_timestamp, "%h %d @ %I:%M %p"
@@ -27,17 +23,7 @@ def print_register(logs):
         seconds = i.duration.total_seconds()
         pretty_duration = f"{seconds // 60:.0f}m.{seconds % 60:.0f}s"
 
-        status = " *" if i.is_cleared else ""
-        maybe_note = f" ({i.note.strip()})" if i.note else ""
-        print(
-            f"{pretty_timestamp}{status}\t{pretty_duration}\t{i.account}: "
-            f"{i.task}{maybe_note}"
-        )
-
-    total_uncleared_time_in_hours = (
-        total_uncleared_time.total_seconds() / 60**2
-    )
-    print(f"TOTAL UNCLEARED TIME: {total_uncleared_time_in_hours:.2f}h")
+        print(f"{pretty_timestamp}\t{pretty_duration}\t{i.account}: {i.task}")
 
     total_time_in_hours = total_time.total_seconds() / 60**2
     print(f"TOTAL TIME: {total_time_in_hours:.2f}h")
@@ -53,8 +39,6 @@ def print_json(logs):
             "duration": i.duration.total_seconds(),
             "account": i.account,
             "task": i.task,
-            "note": i.note,
-            "is_cleared": i.is_cleared,
         }
         json.dump(serialized, sys.stdout, sort_keys=True)
         print(",")
