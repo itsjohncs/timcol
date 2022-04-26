@@ -67,7 +67,7 @@ case ${1-} in
             echo "NOTICE: Task is pending"
         fi
 
-        python3 "$SCRIPT_DIR/print_log" register < "$LEDGER_FILE"
+        python3 "$SCRIPT_DIR/print_log" register "${@:2}" < "$LEDGER_FILE"
         ;;
 
     csv | json)

@@ -10,10 +10,16 @@ import sys
 import log_parser
 
 
-def print_register(logs):
+def print_register(logs, *, for_account):
     """Prints a human readable summary of `logs`."""
     total_time = datetime.timedelta(0)
     for i in logs:
+        account_prefix = ""
+        if for_account and i.account != for_account:
+            continue
+        if not for_account:
+            account_prefix = f"{i.account}: "
+
         total_time += i.duration
 
         pretty_timestamp = datetime.datetime.strftime(
@@ -23,7 +29,9 @@ def print_register(logs):
         seconds = i.duration.total_seconds()
         pretty_duration = f"{seconds // 60:.0f}m.{seconds % 60:.0f}s"
 
-        print(f"{pretty_timestamp}\t{pretty_duration}\t{i.account}: {i.task}")
+        print(
+            f"{pretty_timestamp}\t{pretty_duration}\t{account_prefix}{i.task}"
+        )
 
     total_time_in_hours = total_time.total_seconds() / 60**2
     print(f"TOTAL TIME: {total_time_in_hours:.2f}h")
@@ -137,9 +145,15 @@ def parse_args(args):
     parser = argparse.ArgumentParser(description="Prints time entries.")
 
     subparsers = parser.add_subparsers(title="FORMATS", dest="format")
-
-    subparsers.add_parser("register", help="Human friendly format.")
     subparsers.add_parser("json")
+
+    register_parser = subparsers.add_parser(
+        "register", help="Human friendly format."
+    )
+    register_parser.add_argument(
+        "--account", type=str, help="Only show logs for given account."
+    )
+
     csv_parser = subparsers.add_parser("csv")
     csv_parser.add_argument(
         "-r", "--rate", type=float, help="Hourly rate to bill if not specified."
@@ -156,7 +170,9 @@ def parse_args(args):
 if __name__ == "__main__":
     parsed_args = parse_args(sys.argv[1:])
     if parsed_args.format == "register":
-        print_register(log_parser.parse_lines(sys.stdin))
+        print_register(
+            log_parser.parse_lines(sys.stdin), for_account=parsed_args.account
+        )
     elif parsed_args.format == "csv":
         all_input = sys.stdin.read()
         print_transactions(
