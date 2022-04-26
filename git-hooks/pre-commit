@@ -4,8 +4,6 @@ set -e
 
 GIT_ROOT="$(git rev-parse --show-toplevel)"
 
-"$GIT_ROOT/lint.sh"
-
 mapfile -d "" -t FILES < <(
     git diff --cached --name-only --diff-filter=d -z
 )
@@ -16,3 +14,5 @@ if [[ ${#FILES[@]} -ne 0 ]] && ! (git status --porcelain | grep -Eq "^([^? ][^? 
 else
     echo "Found partially added file. Skipping prettify."
 fi
+
+"$GIT_ROOT/lint.sh"
