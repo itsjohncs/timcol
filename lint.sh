@@ -18,7 +18,6 @@ if ! (find "$ROOT_DIR" -name "*.py" -print0 | xargs -0t pylint -d C0114,C0115,C0
     ANY_FAILED=1
 fi
 
-echo "# black"
 if ! PRETTIFY_CHECK=1 "$ROOT_DIR/prettify.sh"; then
     ANY_FAILED=1
 fi
