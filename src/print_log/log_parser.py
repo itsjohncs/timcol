@@ -3,21 +3,42 @@ import re
 
 # pylint: disable=too-few-public-methods
 
+METADATA_RE = re.compile(r"^    ; ([^:]+):(.+?)$")
+
+
+def line_to_metadata(line):
+    match = METADATA_RE.match(line)
+    if match:
+        return (match.group(1), match.group(2))
+
+    return None
+
 
 class Event:
     CHECKIN_RE = re.compile(
-        r"^i ([^ ]+ [^ ]+ (?:AM|PM)) (.+?)  (.+)$", re.MULTILINE
+        r"^i ([^ ]+ [^ ]+ (?:AM|PM)) (.+?)  (.+?)$", re.MULTILINE
     )
     CHECKOUT_RE = re.compile(r"^o ([^ ]+ [^ ]+ (?:AM|PM))$", re.MULTILINE)
 
-    def __init__(self, *, is_start, timestamp, account, task):
+    def __init__(self, *, is_start, timestamp, account, task, metadata=None):
         self.is_start = is_start
         self.timestamp = timestamp
         self.account = account
         self.task = task
+        self.metadata = metadata or {}
 
     @classmethod
-    def from_string(cls, string):
+    def from_directive(cls, string):
+        """Creates an event from the directive `string`.
+
+        Example of a directive:
+
+        ```
+        i 2021/10/13 01:38:00 PM Foo  Initial phone call
+        ```
+
+        This does not deal with any of the metadata in following lines.
+        """
         checkin_match = cls.CHECKIN_RE.match(string)
         if checkin_match:
             return Event(
@@ -49,18 +70,31 @@ def events_from_lines(lines):
     One checkin or checkout will be one event. No attempt is made to pair them
     up yet. Any line with unrecognized syntax will be ignored.
     """
+    last_event = None
     for i in lines:
-        event = Event.from_string(i)
+        event = Event.from_directive(i)
         if event:
-            yield event
+            if last_event:
+                yield last_event
+
+            last_event = event
+
+        metadata = line_to_metadata(i)
+        if metadata:
+            key, value = metadata
+            last_event.metadata[key] = value
+
+    if last_event:
+        yield last_event
 
 
 class Log:
-    def __init__(self, *, start_timestamp, duration, account, task):
+    def __init__(self, *, start_timestamp, duration, account, task, metadata):
         self.start_timestamp = start_timestamp
         self.duration = duration
         self.account = account
         self.task = task
+        self.metadata = metadata
 
     @classmethod
     def from_event_pair(cls, checkin, checkout):
@@ -72,6 +106,7 @@ class Log:
             duration=checkout.timestamp - checkin.timestamp,
             account=checkin.account,
             task=checkin.task,
+            metadata={**checkin.metadata, **checkout.metadata},
         )
 
 
