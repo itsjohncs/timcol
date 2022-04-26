@@ -17,7 +17,7 @@ else
 fi
 
 echo "# shfmt"
-if ! (find "$ROOT_DIR" -name "*.sh" -print0 | xargs -0t shfmt -i=4 -sr "${SHFMT_FLAGS[@]}"); then
+if ! (find "$ROOT_DIR" \( -name "*.sh" -o -path "*/git-hooks/*" \) -print0 | xargs -0t shfmt -i=4 -sr "${SHFMT_FLAGS[@]}"); then
     ANY_FAILED=1
 fi
 

@@ -9,7 +9,7 @@ ROOT_DIR="$(realpath --relative-to="$PWD" "$SCRIPT_DIR")"
 ANY_FAILED=0
 
 echo "# shellcheck"
-if ! (find "$ROOT_DIR" -name "*.sh" -print0 | xargs -0t shellcheck --shell bash); then
+if ! (find "$ROOT_DIR" \( -name "*.sh" -o -path "*/git-hooks/*" \) -print0 | xargs -0t shellcheck --shell bash); then
     ANY_FAILED=1
 fi
 
