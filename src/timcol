@@ -46,7 +46,7 @@ function last_directive {
 }
 
 function get_timestamp {
-    date +"%Y/%m/%d %H:%M:%S"
+    date +"%Y/%m/%d %I:%M:%S %p"
 }
 
 function maybe_update_hardstatus {
