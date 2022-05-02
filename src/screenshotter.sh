@@ -27,12 +27,8 @@ function record_screenshot {
     fi
 }
 
-function get_account_balances {
-    ledger bal --no-total | python3 -c "$(
-        echo "import sys"
-        echo "print(', '.join("
-        echo "    i.strip().replace('  ', ' ') for i in sys.stdin))"
-    )"
+function get_summary {
+    timcol reg | tail -n 1
 }
 
 function current_status {
@@ -42,7 +38,7 @@ function current_status {
         STATUS="$(printf "%s" "$(
             grep "^[io]" ./ledger.dat |
                 tail -n 1 |
-                cut -d " " -f 4- |
+                cut -d " " -f 5- |
                 sed "s/  /: /"
         )")"
     fi
@@ -52,14 +48,14 @@ function current_status {
 
 function handle_update_status_signal {
     if [[ -n ${SCREENSHOT_STATUS} ]]; then
-        printf "%b" "\33_$(current_status) -- $(get_account_balances) -- $SCREENSHOT_STATUS\33\\"
+        printf "%b" "\33_$(current_status) -- $(get_summary) -- $SCREENSHOT_STATUS\33\\"
     else
-        printf "%b" "\33_$(current_status) -- $(get_account_balances)\33\\"
+        printf "%b" "\33_$(current_status) -- $(get_summary)\33\\"
     fi
 }
 trap handle_update_status_signal USR1
 
-printf "%b" "\33_$(current_status) -- $(get_account_balances)\33\\"
+printf "%b" "\33_$(current_status) -- $(get_summary)\33\\"
 while :; do
     SLEEP_UNTIL=$(("$(date +%s)" + 60))
     while [[ "$(date +%s)" -lt $SLEEP_UNTIL ]]; do
@@ -69,5 +65,5 @@ while :; do
     done
 
     SCREENSHOT_STATUS="$(record_screenshot)"
-    printf "%b" "\33_$(current_status) -- $(get_account_balances) -- $SCREENSHOT_STATUS\33\\"
+    printf "%b" "\33_$(current_status) -- $(get_summary) -- $SCREENSHOT_STATUS\33\\"
 done
