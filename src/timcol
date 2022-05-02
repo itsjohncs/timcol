@@ -97,9 +97,6 @@ case ${1-} in
         elif [[ $# -ne 3 || -z $2 || -z $3 ]]; then
             usage
             exit 1
-        elif ! grep -q "^account $2\$" "$LEDGER_FILE"; then
-            echo "FATAL: Unknown account $2"
-            exit 1
         fi
 
         echo "i $(get_timestamp) $2  $3" >> "$LEDGER_FILE"
