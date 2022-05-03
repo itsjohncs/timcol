@@ -32,6 +32,7 @@ function usage {
     echo "COMMANDS"
     echo "  shell"
     echo "  start ACCOUNT TASK_DESCRIPTION"
+    echo "  resume"
     echo "  stop"
     echo "  edit"
     echo "  register"
@@ -100,6 +101,20 @@ case ${1-} in
         fi
 
         echo "i $(get_timestamp) $2  $3" >> "$LEDGER_FILE"
+
+        maybe_update_hardstatus
+        ;;
+
+    resume)
+        if [[ $(last_directive) == i ]]; then
+            echo "FATAL: Task is pending."
+            exit 1
+        elif [[ $# -ne 1 ]]; then
+            usage
+            exit 1
+        fi
+
+        echo "i $(get_timestamp) $(grep "^i" ~/personal/timekeeping-ledger/ledger.dat | tail -n 1 | cut -d " " -f 5-)" >> "$LEDGER_FILE"
 
         maybe_update_hardstatus
         ;;
