@@ -38,6 +38,7 @@ function usage {
     echo "  register"
     echo "  csv"
     echo "  json"
+    echo "  where"
 }
 
 function last_directive {
@@ -138,6 +139,10 @@ case ${1-} in
     edit)
         $EDITOR "$LEDGER_FILE"
         maybe_update_hardstatus
+        ;;
+
+    where)
+        echo "$LEDGER_FILE"
         ;;
 
     *)
