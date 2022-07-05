@@ -1,3 +1,0 @@
-chdir "$TIMCOL_HOME"
-hardstatus alwayslastline "%h"
-screen -f bash --rcfile "$TIMCOL_REPO/src/shellrc.sh"
