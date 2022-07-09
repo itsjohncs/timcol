@@ -1,5 +1,6 @@
 import argparse
 import typing
+import os
 
 
 class ParsedArgs:
@@ -22,7 +23,8 @@ class ParsedArgs:
 
 def parse_args(raw_args: list[str]) -> ParsedArgs:
     parser = argparse.ArgumentParser(
-        prog="timcol", description="Prints time entries."
+        prog=os.environ.get("TIMCOL_NAME", "timcol"),
+        description="Prints time entries.",
     )
 
     parser.add_argument("-f", "--file", help="Location of log file.")
