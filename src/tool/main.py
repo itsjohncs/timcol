@@ -1,8 +1,8 @@
 import os
 
+from .. import logfile
 from . import args
 from . import view_renderer
-import logfile
 
 
 def find_log_path(parsed_args: args.ParsedArgs) -> str:
@@ -18,7 +18,7 @@ def find_log_path(parsed_args: args.ParsedArgs) -> str:
 def main(argv: list[str]):
     parsed_args = args.parse_args(argv[1:])
 
-    with open(find_log_path(parsed_args), encoding="utf8") as f:
-        log = logfile.parse_file(f)
+    with open(find_log_path(parsed_args), encoding="utf8") as file:
+        log = logfile.parse_file(file)
 
     view_renderer.render(log, parsed_args)

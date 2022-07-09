@@ -14,7 +14,7 @@ if ! (find "$ROOT_DIR" \( -name "*.sh" -o -path "*/git-hooks/*" \) -print0 | xar
 fi
 
 echo "# pylint"
-if ! (find "$ROOT_DIR" -name "*.py" -print0 | xargs -0t pylint -d C0114,C0115,C0116 -s n); then
+if ! pylint --rcfile "$ROOT_DIR/pylintrc" "$ROOT_DIR/src"; then
     ANY_FAILED=1
 fi
 

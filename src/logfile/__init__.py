@@ -18,10 +18,10 @@ def _parse_directive(
 
 
 def _parse_all_directives(
-    f: typing.TextIO,
+    file: typing.TextIO,
 ) -> typing.Iterable[directive.CheckIn | directive.CheckOut]:
     current_directive = None
-    for i in f:
+    for i in file:
         maybe_directive = _parse_directive(i)
         if maybe_directive:
             if current_directive:
@@ -40,9 +40,9 @@ def _parse_all_directives(
         yield current_directive
 
 
-def _parse_all_entries(f: typing.TextIO) -> typing.Iterable[entry.Entry]:
+def _parse_all_entries(file: typing.TextIO) -> typing.Iterable[entry.Entry]:
     current_directive: directive.CheckIn | None = None
-    for i in _parse_all_directives(f):
+    for i in _parse_all_directives(file):
         if current_directive is None:
             assert isinstance(
                 i, directive.CheckIn
@@ -56,5 +56,5 @@ def _parse_all_entries(f: typing.TextIO) -> typing.Iterable[entry.Entry]:
             current_directive = None
 
 
-def parse_file(f: typing.TextIO) -> LogFile:
-    return LogFile(list(_parse_all_entries(f)))
+def parse_file(file: typing.TextIO) -> LogFile:
+    return LogFile(list(_parse_all_entries(file)))

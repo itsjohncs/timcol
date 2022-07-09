@@ -22,7 +22,7 @@ if ! (find "$ROOT_DIR" \( -name "*.sh" -o -path "*/git-hooks/*" \) -print0 | xar
 fi
 
 echo "# black"
-if ! (find "$ROOT_DIR" -name "*.py" -print0 | xargs -0t black --line-length 80 "${BLACK_FLAGS[@]}"); then
+if ! (find "$ROOT_DIR/src" -name "*.py" -print0 | xargs -0t black --line-length 80 "${BLACK_FLAGS[@]}"); then
     ANY_FAILED=1
 fi
 

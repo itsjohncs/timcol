@@ -29,6 +29,8 @@ class CheckIn:
                 task=checkin_match.group(3),
             )
 
+        return None
+
 
 class CheckOut:
     RE = re.compile(r"^o ([^ ]+ [^ ]+ (?:AM|PM))$", re.MULTILINE)
@@ -46,3 +48,5 @@ class CheckOut:
                     checkout_match.group(1), TIME_FORMAT
                 )
             )
+
+        return None

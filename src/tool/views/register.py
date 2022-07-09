@@ -1,6 +1,6 @@
 import datetime
 
-import logfile
+from ... import logfile
 
 
 def render(logs: logfile.LogFile):

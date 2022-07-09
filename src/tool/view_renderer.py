@@ -1,9 +1,7 @@
-import argparse
-
+from .. import logfile
 from . import args
 from .views import register
-import logfile
 
 
-def render(logs: logfile.LogFile, parsed_args: args.ParsedArgs) -> None:
+def render(logs: logfile.LogFile, _parsed_args: args.ParsedArgs) -> None:
     register.render(logs)
