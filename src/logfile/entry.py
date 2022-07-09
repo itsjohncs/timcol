@@ -1,3 +1,7 @@
+import collections
+from datetime import timedelta
+from typing import ChainMap
+
 from . import directive
 
 
@@ -9,26 +13,19 @@ class Entry:
         self.check_out = check_out
 
     @property
-    def duration(self):
+    def duration(self) -> timedelta:
         return self.check_out.timestamp - self.check_in.timestamp
 
     @property
-    def account(self):
+    def account(self) -> str:
         return self.check_in.account
 
     @property
-    def task(self):
+    def task(self) -> str:
         return self.check_in.task
 
-    # @classmethod
-    # def from_event_pair(cls, checkin, checkout):
-    #     if not checkin.is_start or checkout.is_start:
-    #         raise ValueError("Bad checking or checkout event provided.")
-    #
-    #     return cls(
-    #         start_timestamp=checkin.timestamp,
-    #         duration=checkout.timestamp - checkin.timestamp,
-    #         account=checkin.account,
-    #         task=checkin.task,
-    #         metadata={**checkin.metadata, **checkout.metadata},
-    #     )
+    @property
+    def metadata(self) -> ChainMap[str, str]:
+        return collections.ChainMap(
+            self.check_in.metadata, self.check_out.metadata
+        )

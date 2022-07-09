@@ -31,6 +31,9 @@ def _parse_all_directives(
 
         maybe_metadata = re.match(r"^ {4}; ([^:]+):(.+?)$", i)
         if maybe_metadata:
+            assert (
+                current_directive is not None
+            ), f"Found metadata outside of directive: {maybe_metadata.group(0)}"
             current_directive.metadata[
                 maybe_metadata.group(1)
             ] = maybe_metadata.group(2)

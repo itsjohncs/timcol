@@ -1,0 +1,5 @@
+[tool.pyright]
+
+include = ["./src"]
+pythonVersion = "3.11"
+typeCheckingMode = "strict"
