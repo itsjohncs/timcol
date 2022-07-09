@@ -1,8 +1,12 @@
 import sys
+import platform
 
-from .tool import main
+if sys.version_info < (3, 11):
+    raise RuntimeError(
+        f"This script must be run with Python 3.11 or greater (found {platform.python_version()})"
+    )
 
 if __name__ == "__main__":
-    # sys.path.insert(0, str(pathlib.Path(__file__).parent.absolute()))
+    from .tool.main import main
 
-    main.main(sys.argv)
+    main(sys.argv)
