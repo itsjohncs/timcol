@@ -14,8 +14,8 @@ def parse_args(raw_args: list[str]) -> ParsedArgs:
     parser.add_argument("-f", "--file", help="Location of log file.")
 
     subparsers = parser.add_subparsers(title="SUB COMMANDS", dest="sub_command")
-    subparsers.add_parser("json")
-    # subparsers.add_parser("register", help="Human friendly format.")
+    # subparsers.add_parser("json")
+    subparsers.add_parser("reg", help="Human friendly format.")
     # csv_parser = subparsers.add_parser("csv")
     # csv_parser.add_argument(
     #     "-r", "--rate", type=float, help="Hourly rate to bill if not specified."
