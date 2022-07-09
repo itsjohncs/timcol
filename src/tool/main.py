@@ -3,6 +3,7 @@ import os
 from .. import logfile
 from . import args
 from . import view_renderer
+from . import editor
 
 
 def find_log_path(parsed_args: args.ParsedArgs) -> str:
@@ -18,7 +19,12 @@ def find_log_path(parsed_args: args.ParsedArgs) -> str:
 def main(argv: list[str]):
     parsed_args = args.parse_args(argv[1:])
 
-    with open(find_log_path(parsed_args), encoding="utf8") as file:
-        log = logfile.parse_file(file)
+    log_path = find_log_path(parsed_args)
 
-    view_renderer.render(log, parsed_args)
+    if parsed_args.sub_command == "edit":
+        editor.open_in_editor(log_path)
+    else:
+        with open(log_path, encoding="utf8") as file:
+            log = logfile.parse_file(file)
+
+        view_renderer.render(log, parsed_args)

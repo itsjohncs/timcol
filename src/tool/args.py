@@ -8,7 +8,9 @@ class ParsedArgs:
         allow_rate_override: bool
 
     def __init__(self, args: argparse.Namespace):
-        self.sub_command: typing.Literal["reg", "invoice"] = args.sub_command
+        self.sub_command: typing.Literal[
+            "reg", "invoice", "edit"
+        ] = args.sub_command
         self.log_file: str | None = args.file
 
         self.invoice_args: ParsedArgs.InvoiceArgs | None = None
@@ -28,6 +30,8 @@ def parse_args(raw_args: list[str]) -> ParsedArgs:
     subparsers = parser.add_subparsers(
         title="SUB COMMANDS", dest="sub_command", required=True
     )
+
+    subparsers.add_parser("edit", help="Open ledger for editing.")
 
     subparsers.add_parser("reg", help="Human friendly format.")
 
