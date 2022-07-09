@@ -1,9 +1,7 @@
 import os
 
 from .. import logfile
-from . import args
-from . import view_renderer
-from . import editor
+from . import args, view_renderer, editor, mutators
 
 
 def find_log_path(parsed_args: args.ParsedArgs) -> str:
@@ -16,15 +14,24 @@ def find_log_path(parsed_args: args.ParsedArgs) -> str:
     return os.path.join(os.getcwd(), "ledger.dat")
 
 
-def main(argv: list[str]):
+def main(argv: list[str]) -> None:
     parsed_args = args.parse_args(argv[1:])
 
     log_path = find_log_path(parsed_args)
 
-    if parsed_args.sub_command == "edit":
-        editor.open_in_editor(log_path)
-    else:
-        with open(log_path, encoding="utf8") as file:
-            log = logfile.parse_file(file)
+    match parsed_args.sub_command:
+        case "edit":
+            editor.open_in_editor(log_path)
+        case "start":
+            assert parsed_args.start_args
+            mutators.start(log_path, parsed_args.start_args)
+        case "swap":
+            assert parsed_args.start_args
+            mutators.swap(log_path, parsed_args.start_args)
+        case "stop":
+            mutators.stop(log_path)
+        case _:
+            with open(log_path, encoding="utf8") as file:
+                log = logfile.parse_file(file)
 
-        view_renderer.render(log, parsed_args)
+            view_renderer.render(log, parsed_args)

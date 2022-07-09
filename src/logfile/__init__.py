@@ -61,3 +61,16 @@ def _parse_all_entries(file: typing.TextIO) -> typing.Iterable[entry.Entry]:
 
 def parse_file(file: typing.TextIO) -> LogFile:
     return LogFile(list(_parse_all_entries(file)))
+
+
+def parse_pending_directive_in_file(
+    file: typing.TextIO,
+) -> directive.CheckIn | None:
+    last = None
+    for i in _parse_all_directives(file):
+        last = i
+
+    if isinstance(last, directive.CheckIn):
+        return last
+
+    return None
