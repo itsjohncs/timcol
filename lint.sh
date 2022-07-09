@@ -18,6 +18,11 @@ if ! pylint --rcfile "$ROOT_DIR/pylintrc" "$ROOT_DIR/src"; then
     ANY_FAILED=1
 fi
 
+echo "# pyright"
+if ! pyright --pythonversion 3.11 "$ROOT_DIR/src"; then
+    ANY_FAILED=1
+fi
+
 if ! PRETTIFY_CHECK=1 "$ROOT_DIR/prettify.sh"; then
     ANY_FAILED=1
 fi
