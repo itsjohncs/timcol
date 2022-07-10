@@ -1,4 +1,3 @@
 #!/usr/bin/env bash
 
-# PYTHONPATH="$(dirname "${BASH_SOURCE[0]}")" python -m src "$@"
-python -m src "$@"
+( cd "$(dirname "${BASH_SOURCE[0]}")" && python -m src "$@" )
