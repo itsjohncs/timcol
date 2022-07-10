@@ -43,7 +43,9 @@ def _parse_all_directives(
         yield current_directive
 
 
-def _parse_all_entries(file: typing.TextIO) -> typing.Iterable[entry.Entry]:
+def parse_file(file: typing.TextIO) -> LogFile:
+    entries: typing.List[entry.Entry] = []
+
     current_directive: directive.CheckIn | None = None
     for i in _parse_all_directives(file):
         if current_directive is None:
@@ -55,22 +57,7 @@ def _parse_all_entries(file: typing.TextIO) -> typing.Iterable[entry.Entry]:
             assert isinstance(
                 i, directive.CheckOut
             ), f"Expected CheckOut directive, found {i}"
-            yield entry.Entry(current_directive, i)
+            entries.append(entry.Entry(current_directive, i))
             current_directive = None
 
-
-def parse_file(file: typing.TextIO) -> LogFile:
-    return LogFile(list(_parse_all_entries(file)))
-
-
-def parse_pending_directive_in_file(
-    file: typing.TextIO,
-) -> directive.CheckIn | None:
-    last = None
-    for i in _parse_all_directives(file):
-        last = i
-
-    if isinstance(last, directive.CheckIn):
-        return last
-
-    return None
+    return LogFile(entries, current_directive)

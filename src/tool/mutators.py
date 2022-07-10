@@ -6,7 +6,7 @@ from .. import logfile
 
 def get_pending_directive(log_path: str) -> logfile.directive.CheckIn | None:
     with open(log_path, encoding="utf8") as file:
-        return logfile.parse_pending_directive_in_file(file)
+        return logfile.parse_file(file).pending
 
 
 def get_timestamp() -> str:
