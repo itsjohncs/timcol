@@ -34,7 +34,7 @@ def render(logs: logfile.LogFile):
         pretty_duration = f"{seconds // 60:.0f}m.{seconds % 60:.0f}s"
 
         print(
-            f"{pretty_timestamp}\t{pretty_duration}\t{check_in.account}: {check_in.task}"
+            f"{pretty_timestamp}\t{pretty_duration}*\t{check_in.account}: {check_in.task}"
         )
 
     total_time_in_hours = total_time.total_seconds() / 60**2
