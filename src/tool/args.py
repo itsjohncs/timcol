@@ -39,9 +39,8 @@ def parse_args(raw_args: list[str]) -> ParsedArgs:
 
     parser.add_argument("-f", "--file", help="Location of log file.")
 
-    subparsers = parser.add_subparsers(
-        title="SUB COMMANDS", dest="sub_command", required=True
-    )
+    subparsers = parser.add_subparsers(title="SUB COMMANDS", dest="sub_command")
+    subparsers.default = "register"
 
     subparsers.add_parser("edit", help="Open ledger for editing.")
 
