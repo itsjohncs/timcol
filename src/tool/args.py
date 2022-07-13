@@ -66,6 +66,7 @@ def parse_args(raw_args: list[str]) -> ParsedArgs:
     start_parser.add_argument("account", help="Account name.")
     start_parser.add_argument("description", help="Description of work.")
 
+    subparsers.add_parser("resume", help="Restart the last task.")
     subparsers.add_parser("stop", help="Stop current task.")
 
     return ParsedArgs(parser.parse_args(raw_args))

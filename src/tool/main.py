@@ -25,6 +25,8 @@ def main(argv: list[str]) -> None:
         case "start":
             assert parsed_args.start_args
             mutators.start(log_path, parsed_args.start_args)
+        case "resume":
+            mutators.resume(log_path)
         case "swap":
             assert parsed_args.start_args
             mutators.swap(log_path, parsed_args.start_args)
