@@ -1,5 +1,6 @@
 from typing import Tuple
 import datetime
+import math
 
 from ... import logfile
 
@@ -38,6 +39,10 @@ def render(logs: logfile.LogFile):
             day_total = (check_in.timestamp.date(), datetime.timedelta())
 
         duration = datetime.datetime.now() - check_in.timestamp
+        duration = datetime.timedelta(
+            seconds=math.floor(duration.total_seconds())
+        )
+
         day_total = (day_total[0], day_total[1] + duration)
         total_time += duration
 
