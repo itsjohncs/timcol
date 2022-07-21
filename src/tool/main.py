@@ -32,6 +32,8 @@ def main(argv: list[str]) -> None:
             mutators.swap(log_path, parsed_args.start_args)
         case "stop":
             mutators.stop(log_path)
+        case "cancel":
+            mutators.cancel(log_path)
         case _:
             with open(log_path, encoding="utf8") as file:
                 log = logfile.parse_file(file)

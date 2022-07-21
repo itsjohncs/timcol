@@ -33,6 +33,26 @@ def stop(log_path: str) -> bool:
     return True
 
 
+def cancel(log_path: str) -> None:
+    pending = _get_pending_directive(log_path)
+    if not pending:
+        print("No task to cancel.")
+        return
+
+    with open(log_path, "r", encoding="utf8") as file:
+        lines = file.readlines()
+
+    while lines:
+        line = lines.pop().strip()
+
+        if line:
+            print(f"-{line}")
+            break
+
+    with open(log_path, "w", encoding="utf8") as file:
+        file.writelines(lines)
+
+
 def swap(log_path: str, args: ParsedArgs.StartArgs) -> None:
     if stop(log_path):
         start(log_path, args)
