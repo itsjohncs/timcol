@@ -25,4 +25,5 @@ disable=raw-checker-failed,
         missing-class-docstring,
         missing-function-docstring,
         no-member,
-        too-few-public-methods
+        too-few-public-methods,
+        unsubscriptable-object

@@ -1,3 +1,4 @@
+from typing import Tuple
 import datetime
 
 from ... import logfile
@@ -6,36 +7,51 @@ from ... import logfile
 def render(logs: logfile.LogFile):
     """Prints a human-readable summary of `logs`."""
     total_time = datetime.timedelta(0)
+    day_total: Tuple[datetime.date, datetime.timedelta] | None = None
     for entry in logs.entries:
+        if (
+            day_total is not None
+            and entry.check_in.timestamp.date() != day_total[0]
+        ):
+            pretty_date = day_total[0].strftime("%h %d")
+            print(f"{pretty_date} SUBTOTAL\t\t({day_total[1]})")
+            day_total = None
+
+        if day_total is None:
+            day_total = (entry.check_in.timestamp.date(), datetime.timedelta())
+
+        day_total = (day_total[0], day_total[1] + entry.duration)
         total_time += entry.duration
 
         pretty_timestamp = datetime.datetime.strftime(
             entry.check_in.timestamp, "%h %d @ %I:%M %p"
         )
 
-        seconds = entry.duration.total_seconds()
-        pretty_duration = f"{seconds // 60:.0f}m.{seconds % 60:.0f}s"
-
         print(
-            f"{pretty_timestamp}\t{pretty_duration}\t{entry.account}: {entry.task}"
+            f"{pretty_timestamp}\t{entry.duration}\t{entry.account}: {entry.task}"
         )
 
     if logs.pending:
         check_in = logs.pending
 
+        if day_total is None:
+            day_total = (check_in.timestamp.date(), datetime.timedelta())
+
         duration = datetime.datetime.now() - check_in.timestamp
+        day_total = (day_total[0], day_total[1] + duration)
         total_time += duration
 
         pretty_timestamp = datetime.datetime.strftime(
             check_in.timestamp, "%h %d @ %I:%M %p"
         )
 
-        seconds = duration.total_seconds()
-        pretty_duration = f"{seconds // 60:.0f}m.{seconds % 60:.0f}s"
-
         print(
-            f"{pretty_timestamp}\t{pretty_duration}*\t{check_in.account}: {check_in.task}"
+            f"{pretty_timestamp}\t{duration}*\t{check_in.account}: {check_in.task}"
         )
+
+    if day_total is not None:
+        pretty_date = day_total[0].strftime("%h %d")
+        print(f"{pretty_date} SUBTOTAL\t\t({day_total[1]})")
 
     total_time_in_hours = total_time.total_seconds() / 60**2
     print(f"TOTAL TIME: {total_time_in_hours:.2f}h")
