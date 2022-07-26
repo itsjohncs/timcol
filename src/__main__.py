@@ -1,4 +1,5 @@
 import sys
+import os
 import platform
 
 if sys.version_info < (3, 11):
@@ -7,6 +8,10 @@ if sys.version_info < (3, 11):
     )
 
 if __name__ == "__main__":
+    original_cwd = os.environ.get("TIMCOL_ORIGINAL_CWD")
+    if original_cwd:
+        os.chdir(original_cwd)
+
     from .tool.main import main
 
     main(sys.argv)
