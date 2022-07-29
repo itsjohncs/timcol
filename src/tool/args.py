@@ -14,12 +14,12 @@ class ParsedArgs:
 
     def __init__(self, args: argparse.Namespace):
         self.sub_command: typing.Literal[  # type: ignore
-            "reg", "invoice", "edit", "start", "cancel"
+            "reg", "csv", "edit", "start", "cancel"
         ] = {"register": "reg"}.get(args.sub_command, args.sub_command)
         self.log_file: str | None = args.file
 
         self.invoice_args: ParsedArgs.InvoiceArgs | None = None
-        if self.sub_command == "invoice":
+        if self.sub_command == "csv":
             self.invoice_args = ParsedArgs.InvoiceArgs(
                 args.rate, args.allow_rate_override
             )
@@ -48,7 +48,7 @@ def parse_args(raw_args: list[str]) -> ParsedArgs:
         "register", aliases=["reg"], help="Human friendly format."
     )
 
-    csv_parser = subparsers.add_parser("invoice", help="CSV-formatted invoice.")
+    csv_parser = subparsers.add_parser("csv", help="CSV-formatted invoice.")
     csv_parser.add_argument(
         "rate", type=float, help="Hourly rate to bill in USD."
     )
