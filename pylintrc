@@ -26,4 +26,5 @@ disable=raw-checker-failed,
         missing-function-docstring,
         no-member,
         too-few-public-methods,
-        unsubscriptable-object
+        unsubscriptable-object,
+        duplicate-code

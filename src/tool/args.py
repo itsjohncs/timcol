@@ -4,7 +4,11 @@ import os
 
 
 class ParsedArgs:
-    class InvoiceArgs(typing.NamedTuple):
+    class CsvArgs(typing.NamedTuple):
+        rate: float
+        allow_rate_override: bool
+
+    class HtmlArgs(typing.NamedTuple):
         rate: float
         allow_rate_override: bool
 
@@ -14,13 +18,19 @@ class ParsedArgs:
 
     def __init__(self, args: argparse.Namespace):
         self.sub_command: typing.Literal[  # type: ignore
-            "reg", "csv", "edit", "start", "cancel"
+            "reg", "csv", "edit", "start", "cancel", "html"
         ] = {"register": "reg"}.get(args.sub_command, args.sub_command)
         self.log_file: str | None = args.file
 
-        self.invoice_args: ParsedArgs.InvoiceArgs | None = None
+        self.csv_args: ParsedArgs.CsvArgs | None = None
         if self.sub_command == "csv":
-            self.invoice_args = ParsedArgs.InvoiceArgs(
+            self.csv_args = ParsedArgs.CsvArgs(
+                args.rate, args.allow_rate_override
+            )
+
+        self.html_args: ParsedArgs.HtmlArgs | None = None
+        if self.sub_command == "html":
+            self.html_args = ParsedArgs.HtmlArgs(
                 args.rate, args.allow_rate_override
             )
 
@@ -49,6 +59,16 @@ def parse_args(raw_args: list[str]) -> ParsedArgs:
     )
 
     csv_parser = subparsers.add_parser("csv", help="CSV-formatted invoice.")
+    csv_parser.add_argument(
+        "rate", type=float, help="Hourly rate to bill in USD."
+    )
+    csv_parser.add_argument(
+        "--allow-rate-override",
+        action="store_true",
+        help="Allows directives to override their rate.",
+    )
+
+    csv_parser = subparsers.add_parser("html", help="HTML-formatted invoice.")
     csv_parser.add_argument(
         "rate", type=float, help="Hourly rate to bill in USD."
     )

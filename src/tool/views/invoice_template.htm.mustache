@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<head>
+<style>
+body {
+    font-family: sans-serif;
+    margin: 0;
+    padding: 15px;
+}
+
+h1 {
+    margin: 0;
+}
+
+div.total-cost {
+    margin-top: 5px;
+}
+
+table {
+    margin-top: 20px;
+    border-collapse: collapse;
+}
+
+th, td {
+    text-align: left;
+    padding: 8px 13px;
+}
+
+td:last-child, th:last-child {
+    max-width: 30em;
+    min-width: 15em;
+}
+
+tr:nth-child(2n + 1) {
+    background-color: #9BCED3;
+}
+
+tr:first-child {
+    background-color: #034B51;
+}
+
+tr:first-child th {
+    border: none;
+    color: #EEE;
+}
+
+th:not(:first-child), td:not(:first-child) {
+    border-left: 1px solid #CCC;
+}
+</style>
+</head>
+<body>
+<h1>Invoice {{date}}</h1>
+<div class="total-cost">Total Cost {{cost}}</div>
+<table>
+    <tr>
+        <th>Date</th>
+        <th>Duration</th>
+        <th>Hourly Rate</th>
+        <th>Cost</th>
+        <th>Description</th>
+    </tr>
+    {{#tasks}}
+    <tr>
+        <td>{{date}}</td>
+        <td>{{duration}}</td>
+        <td>{{hourly_rate}}</td>
+        <td>{{cost}}</td>
+        <td>{{description}}</td>
+    </tr>
+    {{/tasks}}
+</table>
+</body>

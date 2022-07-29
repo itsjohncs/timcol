@@ -5,5 +5,5 @@
     SCRIPT_DIR="$(dirname "$SCRIPT_PATH")"
     export TIMCOL_ORIGINAL_CWD="$PWD"
     cd "$SCRIPT_DIR"
-    python -m src "$@"
+    "$SCRIPT_DIR/venv/bin/python" -m src "$@"
 )

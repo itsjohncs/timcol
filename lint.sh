@@ -14,7 +14,7 @@ if ! (find "$ROOT_DIR" \( -name "*.sh" -o -path "*/git-hooks/*" \) -print0 | xar
 fi
 
 echo "# pylint"
-if ! pylint --rcfile "$ROOT_DIR/pylintrc" "$ROOT_DIR/src"; then
+if ! "$SCRIPT_DIR/venv/bin/pylint" --rcfile "$ROOT_DIR/pylintrc" "$ROOT_DIR/src"; then
     ANY_FAILED=1
 fi
 
