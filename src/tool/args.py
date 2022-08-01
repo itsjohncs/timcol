@@ -4,6 +4,9 @@ import os
 
 
 class ParsedArgs:
+    class RegisterArgs(typing.NamedTuple):
+        show_unscaled_time: bool
+
     class CsvArgs(typing.NamedTuple):
         rate: float
         allow_rate_override: bool
@@ -21,6 +24,12 @@ class ParsedArgs:
             "reg", "csv", "edit", "start", "cancel", "html"
         ] = {"register": "reg"}.get(args.sub_command, args.sub_command)
         self.log_file: str | None = args.file
+
+        self.register_args: ParsedArgs.RegisterArgs | None = None
+        if self.sub_command == "reg":
+            self.register_args = ParsedArgs.RegisterArgs(
+                getattr(args, "unscaled", False)
+            )
 
         self.csv_args: ParsedArgs.CsvArgs | None = None
         if self.sub_command == "csv":
@@ -54,8 +63,11 @@ def parse_args(raw_args: list[str]) -> ParsedArgs:
 
     subparsers.add_parser("edit", help="Open ledger for editing.")
 
-    subparsers.add_parser(
+    register_parser = subparsers.add_parser(
         "register", aliases=["reg"], help="Human friendly format."
+    )
+    register_parser.add_argument(
+        "-u", "--unscaled", action="store_true", help="Show unscaled totals."
     )
 
     csv_parser = subparsers.add_parser("csv", help="CSV-formatted invoice.")

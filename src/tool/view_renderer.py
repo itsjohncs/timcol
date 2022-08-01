@@ -5,7 +5,8 @@ from .views import register, csv, html
 
 def render(logs: logfile.LogFile, parsed_args: args.ParsedArgs) -> None:
     if parsed_args.sub_command == "reg":
-        register.render(logs)
+        assert parsed_args.register_args is not None
+        register.render(logs, parsed_args.register_args)
     elif parsed_args.sub_command == "csv":
         assert parsed_args.csv_args is not None
         csv.render(logs, parsed_args.csv_args)

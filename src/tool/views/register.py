@@ -3,6 +3,8 @@ import datetime
 import math
 from tabulate import tabulate
 
+from src.tool.args import ParsedArgs
+
 from ... import logfile
 from ...logfile.entry import Entry
 
@@ -22,7 +24,7 @@ def pretty_duration(duration: datetime.timedelta) -> str:
     return f"{sec / 60**2:01.0f}:{sec / 60 % 60:02.0f}:{sec % 60:02.0f}"
 
 
-def render(logs: logfile.LogFile):
+def render(logs: logfile.LogFile, args: ParsedArgs.RegisterArgs):
     """Prints a human-readable summary of `logs`."""
     total_time = datetime.timedelta(0)
     day_total: Tuple[datetime.date, datetime.timedelta] | None = None
@@ -41,7 +43,11 @@ def render(logs: logfile.LogFile):
             status = "*"
 
         multiplier = float(entry.metadata.get("Multiplier", 1.0))
-        scaled_duration = floor_delta(scale(duration, multiplier))
+
+        if args.show_unscaled_time:
+            scaled_duration = duration
+        else:
+            scaled_duration = floor_delta(scale(duration, multiplier))
 
         if day_total is not None and check_in.timestamp.date() != day_total[0]:
             pretty_date = day_total[0].strftime("%h %d")
@@ -64,7 +70,12 @@ def render(logs: logfile.LogFile):
             check_in.timestamp, "%h %d @ %I:%M %p"
         )
 
-        pretty_multiplier = "" if multiplier == 1.0 else f" / {multiplier:1.1f}"
+        if multiplier == 1.0:
+            pretty_multiplier = ""
+        elif args.show_unscaled_time:
+            pretty_multiplier = f" * {multiplier:1.1f}"
+        else:
+            pretty_multiplier = f" / {multiplier:1.1f}"
 
         rows.append(
             {
