@@ -1,6 +1,7 @@
-from typing import Tuple
+from typing import Tuple, List, Dict
 import datetime
 import math
+from tabulate import tabulate
 
 from ... import logfile
 from ...logfile.entry import Entry
@@ -16,10 +17,16 @@ def scale(
     return datetime.timedelta(seconds=duration.total_seconds() * multiplier)
 
 
+def pretty_duration(duration: datetime.timedelta) -> str:
+    sec = duration.total_seconds()
+    return f"{sec / 60**2:01.0f}:{sec / 60 % 60:02.0f}:{sec % 60:02.0f}"
+
+
 def render(logs: logfile.LogFile):
     """Prints a human-readable summary of `logs`."""
     total_time = datetime.timedelta(0)
     day_total: Tuple[datetime.date, datetime.timedelta] | None = None
+    rows: List[Dict[str, str]] = []
     for entry in [*logs.entries, logs.pending]:
         if entry is None:
             continue
@@ -38,7 +45,13 @@ def render(logs: logfile.LogFile):
 
         if day_total is not None and check_in.timestamp.date() != day_total[0]:
             pretty_date = day_total[0].strftime("%h %d")
-            print(f"{pretty_date} SUBTOTAL\t\t({day_total[1]})")
+            rows.append(
+                {
+                    "timestamp": f"{pretty_date} SUBTOTAL",
+                    "duration": pretty_duration(day_total[1]),
+                }
+            )
+            rows.append({})
             day_total = None
 
         if day_total is None:
@@ -51,16 +64,31 @@ def render(logs: logfile.LogFile):
             check_in.timestamp, "%h %d @ %I:%M %p"
         )
 
-        pretty_multiplier = "" if multiplier == 1.0 else f" / {multiplier:1.1}"
+        pretty_multiplier = "" if multiplier == 1.0 else f" / {multiplier:1.1f}"
 
-        print(
-            f"{pretty_timestamp}\t{scaled_duration}{pretty_multiplier}{status}"
-            f"\t{entry.account}: {entry.task}"
+        rows.append(
+            {
+                "timestamp": pretty_timestamp,
+                "duration": f"{pretty_duration(scaled_duration)}{pretty_multiplier}{status}",
+                "account": entry.account,
+                "task": entry.task,
+            }
         )
 
     if day_total is not None:
         pretty_date = day_total[0].strftime("%h %d")
-        print(f"{pretty_date} SUBTOTAL\t\t({day_total[1]})")
+        rows.append(
+            {
+                "timestamp": f"{pretty_date} SUBTOTAL",
+                "duration": pretty_duration(day_total[1]),
+            }
+        )
 
-    total_time_in_hours = total_time.total_seconds() / 60**2
-    print(f"TOTAL TIME: {total_time_in_hours:.2f}h")
+    rows.append(
+        {
+            "timestamp": "TOTAL TIME",
+            "duration": pretty_duration(total_time),
+        }
+    )
+
+    print(tabulate(rows, headers="keys"))
