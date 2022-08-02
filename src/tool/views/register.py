@@ -7,6 +7,7 @@ from src.tool.args import ParsedArgs
 
 from ... import logfile
 from ...logfile.entry import Entry
+from ._shared import pretty_duration
 
 
 def floor_delta(delta: datetime.timedelta) -> datetime.timedelta:
@@ -17,11 +18,6 @@ def scale(
     duration: datetime.timedelta, multiplier: float
 ) -> datetime.timedelta:
     return datetime.timedelta(seconds=duration.total_seconds() * multiplier)
-
-
-def pretty_duration(duration: datetime.timedelta) -> str:
-    sec = duration.total_seconds()
-    return f"{sec / 60**2:01.0f}:{sec / 60 % 60:02.0f}:{sec % 60:02.0f}"
 
 
 def render(logs: logfile.LogFile, args: ParsedArgs.RegisterArgs):

@@ -7,6 +7,7 @@ import pystache
 
 from ... import logfile
 from ..args import ParsedArgs
+from ._shared import pretty_duration
 
 
 def total_hours(duration: datetime.timedelta) -> float:
@@ -17,8 +18,6 @@ def render(logs: logfile.LogFile, args: ParsedArgs.HtmlArgs) -> None:
     tasks: List[Dict[str, str]] = []
     total_cost = 0
     for i in logs.entries:
-        seconds = i.duration.total_seconds()
-
         base_rate = (
             float(i.metadata.get("Rate", args.rate))
             if args.allow_rate_override
@@ -33,11 +32,7 @@ def render(logs: logfile.LogFile, args: ParsedArgs.HtmlArgs) -> None:
         tasks.append(
             {
                 "date": i.check_in.timestamp.strftime("%Y/%m/%d"),
-                "duration": (
-                    f"{seconds // 60 // 60:02.0f}:"
-                    f"{(seconds // 60) % 60:02.0f}:"
-                    f"{seconds % 60:02.0f}"
-                ),
+                "duration": pretty_duration(i.duration),
                 "hourly_rate": f"${rate:.2f}",
                 "cost": f"${cost:.2f}",
                 "description": i.task,

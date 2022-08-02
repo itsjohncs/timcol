@@ -4,6 +4,7 @@ import sys
 
 from ... import logfile
 from ..args import ParsedArgs
+from ._shared import pretty_duration
 
 
 def total_hours(duration: datetime.timedelta) -> float:
@@ -25,8 +26,6 @@ def render(logs: logfile.LogFile, args: ParsedArgs.CsvArgs) -> None:
 
     total_cost = 0
     for i in logs.entries:
-        seconds = i.duration.total_seconds()
-
         base_rate = (
             float(i.metadata.get("Rate", args.rate))
             if args.allow_rate_override
@@ -43,11 +42,7 @@ def render(logs: logfile.LogFile, args: ParsedArgs.CsvArgs) -> None:
                 "Date": datetime.datetime.strftime(
                     i.check_in.timestamp, "%Y/%m/%d"
                 ),
-                "Duration": (
-                    f"{seconds // 60 // 60:02.0f}:"
-                    f"{(seconds // 60) % 60:02.0f}:"
-                    f"{seconds % 60:02.0f}"
-                ),
+                "Duration": pretty_duration(i.duration),
                 "Rate": f"${rate:.2f}",
                 "Cost": f"${cost:.2f}",
                 "Description": i.task,
