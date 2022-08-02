@@ -17,6 +17,7 @@ def total_hours(duration: datetime.timedelta) -> float:
 def render(logs: logfile.LogFile, args: ParsedArgs.HtmlArgs) -> None:
     tasks: List[Dict[str, str]] = []
     total_cost = 0
+    total_time = datetime.timedelta()
     for i in logs.entries:
         base_rate = (
             float(i.metadata.get("Rate", args.rate))
@@ -28,6 +29,8 @@ def render(logs: logfile.LogFile, args: ParsedArgs.HtmlArgs) -> None:
 
         cost = total_hours(i.duration) * rate
         total_cost += cost
+
+        total_time += i.duration
 
         tasks.append(
             {
@@ -42,6 +45,7 @@ def render(logs: logfile.LogFile, args: ParsedArgs.HtmlArgs) -> None:
     data = {
         "date": datetime.date.today().strftime("%Y/%m/%d"),
         "cost": f"${total_cost:,.2f}",
+        "duration": pretty_duration(total_time),
         "tasks": tasks,
     }
 

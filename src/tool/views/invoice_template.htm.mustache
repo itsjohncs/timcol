@@ -12,6 +12,10 @@ h1 {
 }
 
 div.total-cost {
+    margin-top: 15px;
+}
+
+div.total-time {
     margin-top: 5px;
 }
 
@@ -50,7 +54,8 @@ th:not(:first-child), td:not(:first-child) {
 </head>
 <body>
 <h1>Invoice {{date}}</h1>
-<div class="total-cost">Total Cost {{cost}}</div>
+<div class="total-cost"><b>Total Cost</b> {{cost}}</div>
+<div class="total-time"><b>Total Time</b> {{duration}}</div>
 <table>
     <tr>
         <th>Date</th>
