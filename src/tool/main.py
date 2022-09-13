@@ -1,5 +1,7 @@
 import os
 
+from src.tool.upload import run_upload
+
 from .. import logfile
 from . import args, view_renderer, editor, mutators
 
@@ -36,6 +38,8 @@ def main(argv: list[str]) -> None:
             mutators.stop(log_path)
         case "cancel":
             mutators.cancel(log_path)
+        case "upload":
+            run_upload(log_path)
         case _:
             with open(log_path, encoding="utf8") as file:
                 log = logfile.parse_file(file)

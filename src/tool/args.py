@@ -21,8 +21,17 @@ class ParsedArgs:
 
     def __init__(self, args: argparse.Namespace):
         self.sub_command: typing.Literal[  # type: ignore
-            "reg", "csv", "edit", "start", "cancel", "html", "log-path"
-        ] = {"register": "reg"}.get(args.sub_command, args.sub_command)
+            "reg",
+            "csv",
+            "edit",
+            "start",
+            "cancel",
+            "html",
+            "log-path",
+            "upload",
+        ] = {"register": "reg", "sync": "upload"}.get(
+            args.sub_command, args.sub_command
+        )
         self.log_file: str | None = args.file
 
         self.register_args: ParsedArgs.RegisterArgs | None = None
@@ -101,6 +110,12 @@ def parse_args(raw_args: list[str]) -> ParsedArgs:
     subparsers.add_parser("resume", help="Restart the last task.")
     subparsers.add_parser("stop", help="Stop current task.")
     subparsers.add_parser("cancel", help="Delete current task.")
+
+    subparsers.add_parser(
+        "upload",
+        aliases=["sync"],
+        help="Execute the file `upload` in the directory the log file is in.",
+    )
     subparsers.add_parser(
         "log-path", help="Print the path of the log file then exit."
     )
