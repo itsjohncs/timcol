@@ -20,6 +20,8 @@ def main(argv: list[str]) -> None:
     log_path = find_log_path(parsed_args)
 
     match parsed_args.sub_command:
+        case "log-path":
+            print(log_path)
         case "edit":
             editor.open_in_editor(log_path)
         case "start":
