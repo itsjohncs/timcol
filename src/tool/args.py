@@ -20,7 +20,10 @@ class ParsedArgs:
         description: str
 
     def __init__(self, args: argparse.Namespace):
-        self.sub_command: typing.Literal[  # type: ignore
+        sub_command: str = {"register": "reg", "sync": "upload"}.get(
+            args.sub_command, args.sub_command
+        )
+        assert sub_command in {
             "reg",
             "csv",
             "edit",
@@ -29,9 +32,10 @@ class ParsedArgs:
             "html",
             "log-path",
             "upload",
-        ] = {"register": "reg", "sync": "upload"}.get(
-            args.sub_command, args.sub_command
-        )
+            "switch",
+        }
+        self.sub_command = sub_command
+
         self.log_file: str | None = args.file
 
         self.register_args: ParsedArgs.RegisterArgs | None = None
