@@ -1,9 +1,34 @@
 # timcol
 
-**Tim**~~e~~ **cl**~~i~~ (with an **o** thrown in) is a time tracker for the forgetful.
+`timcol` is a command line time tracking and invoicing tool. Similar tools exist within the [plain text accounting ecosystem](https://plaintextaccounting.org/#time-logging).
 
-Features of `timcol` include
+```
+usage: timcol [-h] [-f FILE]
+              {edit,register,reg,csv,html,start,swap,resume,stop,cancel,upload,sync,log-path}
+              ...
 
-* A screenshotter to help you figure out when you started/stopped a task if you forgot to log your time.
-* An output format that's compatible with [ledger-cli](https://www.ledger-cli.org).
-* An entry point that starts up a pre-split `screen` session with the screenshotter's output, recent timelog entries, and a convenient shell for logging them.
+Prints time entries.
+
+options:
+  -h, --help            show this help message and exit
+  -f FILE, --file FILE  Location of log file. Defaults to
+                        $TIMCOL_HOME/ledger.dat if TIMCOL_HOME is set,
+                        otherwise defaults to ./ledger.dat.
+
+SUB COMMANDS:
+  {edit,register,reg,csv,html,start,swap,resume,stop,cancel,upload,sync,log-path}
+    edit                Open ledger for editing.
+    register (reg)      Human friendly format.
+    csv                 CSV-formatted invoice.
+    html                HTML-formatted invoice.
+    start (swap)        Start a new task (use swap to stop and immediately
+                        start a new task)
+    resume              Restart the last task.
+    stop                Stop current task.
+    cancel              Delete current task.
+    upload (sync)       Execute the file `upload` in the directory the log
+                        file is in.
+    log-path            Print the path of the log file then exit.
+
+TIMCOL_NAME can be set to change the name of timcol in help text.
+```

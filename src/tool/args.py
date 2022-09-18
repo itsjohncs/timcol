@@ -67,9 +67,17 @@ def parse_args(raw_args: list[str]) -> ParsedArgs:
     parser = argparse.ArgumentParser(
         prog=os.environ.get("TIMCOL_NAME", "timcol"),
         description="Prints time entries.",
+        epilog="TIMCOL_NAME can be set to change the name of timcol in help text.",
     )
 
-    parser.add_argument("-f", "--file", help="Location of log file.")
+    parser.add_argument(
+        "-f",
+        "--file",
+        help=(
+            "Location of log file. Defaults to $TIMCOL_HOME/ledger.dat if "
+            "TIMCOL_HOME is set, otherwise defaults to ./ledger.dat."
+        ),
+    )
 
     subparsers = parser.add_subparsers(title="SUB COMMANDS", dest="sub_command")
     subparsers.default = "register"
