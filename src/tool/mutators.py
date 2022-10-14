@@ -5,8 +5,11 @@ from .. import logfile
 
 
 def _get_pending_directive(log_path: str) -> logfile.directive.CheckIn | None:
-    with open(log_path, encoding="utf8") as file:
-        return logfile.parse_file(file).pending
+    try:
+        with open(log_path, encoding="utf8") as file:
+            return logfile.parse_file(file).pending
+    except FileNotFoundError:
+        return None
 
 
 def _get_timestamp() -> str:
@@ -59,10 +62,13 @@ def swap(log_path: str, args: ParsedArgs.StartArgs) -> None:
 
 
 def resume(log_path: str) -> None:
-    with open(log_path, encoding="utf8") as file:
-        logs = logfile.parse_file(file)
+    try:
+        with open(log_path, encoding="utf8") as file:
+            logs = logfile.parse_file(file)
+    except FileNotFoundError:
+        logs = None
 
-    if not logs.entries:
+    if not logs or not logs.entries:
         print("No task to resume.")
         return
     if logs.pending:
