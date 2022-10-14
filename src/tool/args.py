@@ -33,6 +33,10 @@ class ParsedArgs:
             "log-path",
             "upload",
             "switch",
+            "resume",
+            "swap",
+            "stop",
+            "sync",
         }
         self.sub_command = sub_command
 
