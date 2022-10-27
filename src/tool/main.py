@@ -37,6 +37,9 @@ def main(argv: list[str]) -> None:
             mutators.stop(log_path)
         case "cancel":
             mutators.cancel(log_path)
+        case "backfill":
+            assert parsed_args.backfill_args
+            mutators.backfill(log_path, parsed_args.backfill_args)
         case "upload":
             run_upload(log_path)
         case _:

@@ -1,6 +1,42 @@
 import argparse
 import typing
 import os
+import datetime
+import re
+
+import dateparser
+
+
+def parse_duration(text: str) -> datetime.timedelta:
+    duration = datetime.timedelta()
+    to_parse = text
+    while to_parse:
+        part = re.search(r"^([0-9]+(?:\.[0-9]+)?)([hms])(?:$|\s)", to_parse)
+        if part is None:
+            raise ValueError("Could not parse.")
+
+        to_parse = to_parse[len(part.group(0)) :]
+
+        unit = typing.cast(typing.Literal["h", "m", "s"], part.group(2))
+        quantity = float(part.group(1))
+
+        match unit:
+            case "h":
+                duration += datetime.timedelta(hours=quantity)
+            case "m":
+                duration += datetime.timedelta(minutes=quantity)
+            case "s":
+                duration += datetime.timedelta(seconds=quantity)
+
+    return duration
+
+
+def parse_datetime(text: str) -> datetime.datetime:
+    result = dateparser.parse(text)
+    if result is None:
+        raise ValueError()
+
+    return result
 
 
 class ParsedArgs:
@@ -18,6 +54,12 @@ class ParsedArgs:
     class StartArgs(typing.NamedTuple):
         account: str
         description: str
+
+    class BackfillArgs(typing.NamedTuple):
+        account: str
+        description: str
+        start: datetime.datetime
+        duration: datetime.timedelta
 
     def __init__(self, args: argparse.Namespace):
         sub_command: str = {"register": "reg", "sync": "upload"}.get(
@@ -37,6 +79,7 @@ class ParsedArgs:
             "swap",
             "stop",
             "sync",
+            "backfill",
         }
         self.sub_command = sub_command
 
@@ -64,6 +107,12 @@ class ParsedArgs:
         if self.sub_command in ("start", "swap"):
             self.start_args = ParsedArgs.StartArgs(
                 args.account, args.description
+            )
+
+        self.backfill_args: ParsedArgs.BackfillArgs | None = None
+        if self.sub_command == "backfill":
+            self.backfill_args = ParsedArgs.BackfillArgs(
+                args.account, args.description, args.start, args.duration
             )
 
 
@@ -122,6 +171,23 @@ def parse_args(raw_args: list[str]) -> ParsedArgs:
     )
     start_parser.add_argument("account", help="Account name.")
     start_parser.add_argument("description", help="Description of work.")
+
+    start_parser = subparsers.add_parser(
+        "backfill",
+        help="Record a complete task given its timestamp and duration.",
+    )
+    start_parser.add_argument("account", help="Account name.")
+    start_parser.add_argument("description", help="Description of work.")
+    start_parser.add_argument(
+        "start",
+        type=parse_datetime,
+        help="When the task started. Accepts a wide-range of formats.",
+    )
+    start_parser.add_argument(
+        "duration",
+        type=parse_duration,
+        help="How long the task went for. Examples of correct values: '3h 2m 1s', '1h', '300m'.",
+    )
 
     subparsers.add_parser("resume", help="Restart the last task.")
     subparsers.add_parser("stop", help="Stop current task.")
