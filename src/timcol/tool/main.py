@@ -16,8 +16,8 @@ def find_log_path(parsed_args: args.ParsedArgs) -> str:
     return os.path.join(os.getcwd(), "ledger.dat")
 
 
-def main() -> None:
-    parsed_args = args.parse_args(sys.argv[1:])
+def main(argv: list[str] = sys.argv[1:]) -> None:
+    parsed_args = args.parse_args(argv)
 
     log_path = find_log_path(parsed_args)
 
