@@ -22,3 +22,12 @@ repos:
   rev: v1.1.373
   hooks:
   - id: pyright
+- repo: https://github.com/rhysd/actionlint
+  rev: v1.7.1
+  hooks:
+  - id: actionlint
+- repo: https://github.com/python-jsonschema/check-jsonschema
+  rev: 0.29.1
+  hooks:
+  - id: check-github-workflows
+  - id: check-github-actions
