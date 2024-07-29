@@ -1,7 +1,7 @@
 [project]
 name = "timcol"
 version = "0.1.0"
-description = "Time tracking for the forgetful."
+description = "Time tracking on the command line."
 authors = [
     { name = "itsjohncs", email = "johnsullivan.pem@gmail.com" }
 ]
