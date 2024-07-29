@@ -1,9 +1,0 @@
-#!/usr/bin/env bash
-
-(
-    SCRIPT_PATH="$(realpath "${BASH_SOURCE[0]}")"
-    SCRIPT_DIR="$(dirname "$SCRIPT_PATH")"
-    export TIMCOL_ORIGINAL_CWD="$PWD"
-    cd "$SCRIPT_DIR"
-    "$SCRIPT_DIR/venv/bin/python" -m src "$@"
-)

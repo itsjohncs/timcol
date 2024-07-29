@@ -1,4 +1,5 @@
 import os
+import sys
 
 from .upload import run_upload
 from .. import logfile
@@ -15,8 +16,8 @@ def find_log_path(parsed_args: args.ParsedArgs) -> str:
     return os.path.join(os.getcwd(), "ledger.dat")
 
 
-def main(argv: list[str]) -> None:
-    parsed_args = args.parse_args(argv[1:])
+def main() -> None:
+    parsed_args = args.parse_args(sys.argv[1:])
 
     log_path = find_log_path(parsed_args)
 

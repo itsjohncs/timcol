@@ -3,7 +3,7 @@ import datetime
 import math
 from tabulate import tabulate
 
-from src.tool.args import ParsedArgs
+from ..args import ParsedArgs
 
 from ... import logfile
 from ...logfile.entry import Entry
