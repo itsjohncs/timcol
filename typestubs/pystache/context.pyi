@@ -18,23 +18,18 @@ spec, we define these categories mutually exclusively as follows:
 
 """
 _BUILTIN_MODULE = ...
-class NotFound:
-    ...
 
+class NotFound: ...
 
 _NOT_FOUND = ...
+
 class KeyNotFoundError(PystacheError):
     """
     An exception raised when a key is not found in a context stack.
 
     """
-    def __init__(self, key, details) -> None:
-        ...
-    
-    def __str__(self) -> str:
-        ...
-    
-
+    def __init__(self, key, details) -> None: ...
+    def __str__(self) -> str: ...
 
 class ContextStack:
     """
@@ -69,8 +64,8 @@ class ContextStack:
 
         """
         ...
-    
-    def __repr__(self): # -> str:
+
+    def __repr__(self):  # -> str:
         """
         Return a string representation of the instance.
 
@@ -82,9 +77,9 @@ class ContextStack:
 
         """
         ...
-    
+
     @staticmethod
-    def create(*context, **kwargs): # -> ContextStack:
+    def create(*context, **kwargs):  # -> ContextStack:
         """
         Build a ContextStack instance from a sequence of context-like items.
 
@@ -123,8 +118,8 @@ class ContextStack:
 
         """
         ...
-    
-    def get(self, name): # -> Any | NotFound:
+
+    def get(self, name):  # -> Any | NotFound:
         """
         Resolve a dotted name against the current context stack.
 
@@ -194,34 +189,31 @@ class ContextStack:
 
         """
         ...
-    
-    def push(self, item): # -> None:
+
+    def push(self, item):  # -> None:
         """
         Push an item onto the stack.
 
         """
         ...
-    
+
     def pop(self):
         """
         Pop an item off of the stack, and return it.
 
         """
         ...
-    
+
     def top(self):
         """
         Return the item last added to the stack.
 
         """
         ...
-    
-    def copy(self): # -> ContextStack:
+
+    def copy(self):  # -> ContextStack:
         """
         Return a copy of this instance.
 
         """
         ...
-    
-
-

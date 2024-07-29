@@ -39,9 +39,7 @@ def render(logs: logfile.LogFile, args: ParsedArgs.CsvArgs) -> None:
 
         writer.writerow(
             {
-                "Date": datetime.datetime.strftime(
-                    i.check_in.timestamp, "%Y/%m/%d"
-                ),
+                "Date": datetime.datetime.strftime(i.check_in.timestamp, "%Y/%m/%d"),
                 "Duration": pretty_duration(i.duration),
                 "Rate": f"${rate:.2f}",
                 "Cost": f"${cost:.2f}",

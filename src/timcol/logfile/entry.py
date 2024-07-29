@@ -26,6 +26,4 @@ class Entry:
 
     @property
     def metadata(self) -> ChainMap[str, str]:
-        return collections.ChainMap(
-            self.check_in.metadata, self.check_out.metadata
-        )
+        return collections.ChainMap(self.check_in.metadata, self.check_out.metadata)

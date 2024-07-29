@@ -29,3 +29,8 @@ allow-direct-references = true
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/timcol"]
+
+[tool.pyright]
+venvPath = "."
+venv = ".venv"
+stubPath = "./typestubs"

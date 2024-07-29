@@ -8,6 +8,7 @@ Exposes a parse() function to parse template strings.
 """
 END_OF_LINE_CHARACTERS = ...
 NON_BLANK_RE = ...
+
 def parse(template, delimiters=...):
     """
     Parse a unicode template string and return a ParsedTemplate instance.
@@ -27,97 +28,59 @@ def parse(template, delimiters=...):
     """
     ...
 
-class ParsingError(Exception):
-    ...
-
+class ParsingError(Exception): ...
 
 class _CommentNode:
-    def __repr__(self): # -> str:
+    def __repr__(self):  # -> str:
         ...
-    
-    def render(self, engine, context): # -> Literal['']:
+    def render(self, engine, context):  # -> Literal['']:
         ...
-    
-
 
 class _ChangeNode:
-    def __init__(self, delimiters) -> None:
+    def __init__(self, delimiters) -> None: ...
+    def __repr__(self):  # -> str:
         ...
-    
-    def __repr__(self): # -> str:
+    def render(self, engine, context):  # -> Literal['']:
         ...
-    
-    def render(self, engine, context): # -> Literal['']:
-        ...
-    
-
 
 class _EscapeNode:
-    def __init__(self, key) -> None:
+    def __init__(self, key) -> None: ...
+    def __repr__(self):  # -> str:
         ...
-    
-    def __repr__(self): # -> str:
-        ...
-    
-    def render(self, engine, context):
-        ...
-    
-
+    def render(self, engine, context): ...
 
 class _LiteralNode:
-    def __init__(self, key) -> None:
+    def __init__(self, key) -> None: ...
+    def __repr__(self):  # -> str:
         ...
-    
-    def __repr__(self): # -> str:
-        ...
-    
-    def render(self, engine, context):
-        ...
-    
-
+    def render(self, engine, context): ...
 
 class _PartialNode:
-    def __init__(self, key, indent) -> None:
+    def __init__(self, key, indent) -> None: ...
+    def __repr__(self):  # -> str:
         ...
-    
-    def __repr__(self): # -> str:
-        ...
-    
-    def render(self, engine, context):
-        ...
-    
-
+    def render(self, engine, context): ...
 
 class _InvertedNode:
-    def __init__(self, key, parsed_section) -> None:
+    def __init__(self, key, parsed_section) -> None: ...
+    def __repr__(self):  # -> str:
         ...
-    
-    def __repr__(self): # -> str:
+    def render(self, engine, context):  # -> Literal['']:
         ...
-    
-    def render(self, engine, context): # -> Literal['']:
-        ...
-    
-
 
 class _SectionNode:
-    def __init__(self, key, parsed, delimiters, template, index_begin, index_end) -> None:
+    def __init__(
+        self, key, parsed, delimiters, template, index_begin, index_end
+    ) -> None: ...
+    def __repr__(self):  # -> str:
         ...
-    
-    def __repr__(self): # -> str:
+    def render(self, engine, context):  # -> str:
         ...
-    
-    def render(self, engine, context): # -> str:
-        ...
-    
-
 
 class _Parser:
     _delimiters = ...
     _template_re = ...
-    def __init__(self, delimiters=...) -> None:
-        ...
-    
+    def __init__(self, delimiters=...) -> None: ...
     def parse(self, template):
         """
         Parse a template string starting at some index.
@@ -136,6 +99,3 @@ class _Parser:
 
         """
         ...
-    
-
-

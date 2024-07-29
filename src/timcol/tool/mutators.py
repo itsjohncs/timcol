@@ -21,9 +21,7 @@ def start(log_path: str, args: ParsedArgs.StartArgs) -> None:
         print("Task already pending.")
     else:
         with open(log_path, "a", encoding="utf8") as file:
-            file.write(
-                f"i {_get_timestamp()} {args.account}  {args.description}\n"
-            )
+            file.write(f"i {_get_timestamp()} {args.account}  {args.description}\n")
 
 
 def stop(log_path: str) -> bool:
@@ -77,16 +75,12 @@ def resume(log_path: str) -> None:
     last_entry = logs.entries[-1]
 
     with open(log_path, "a", encoding="utf8") as file:
-        file.write(
-            f"i {_get_timestamp()} {last_entry.account}  {last_entry.task}\n"
-        )
+        file.write(f"i {_get_timestamp()} {last_entry.account}  {last_entry.task}\n")
 
 
 def backfill(log_path: str, args: ParsedArgs.BackfillArgs) -> None:
     in_timestamp = args.start.strftime(logfile.directive.TIME_FORMAT)
-    out_timestamp = (args.start + args.duration).strftime(
-        logfile.directive.TIME_FORMAT
-    )
+    out_timestamp = (args.start + args.duration).strftime(logfile.directive.TIME_FORMAT)
     with open(log_path, "a", encoding="utf8") as file:
         file.write(f"i {in_timestamp} {args.account}  {args.description}\n")
         file.write(f"o {out_timestamp}\n")

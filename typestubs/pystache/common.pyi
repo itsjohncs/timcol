@@ -7,7 +7,8 @@ Exposes functionality needed throughout the project.
 
 """
 _STRING_TYPES = ...
-def is_string(obj): # -> bool:
+
+def is_string(obj):  # -> bool:
     """
     Return whether the given object is a byte string or unicode string.
 
@@ -17,7 +18,7 @@ def is_string(obj): # -> bool:
     """
     ...
 
-def read(path): # -> bytes:
+def read(path):  # -> bytes:
     """
     Return the contents of a text file as a byte string.
 
@@ -26,17 +27,16 @@ def read(path): # -> bytes:
 
 class MissingTags:
     """Contains the valid values for Renderer.missing_tags."""
+
     ignore = ...
     strict = ...
 
-
 class PystacheError(Exception):
     """Base class for Pystache exceptions."""
-    ...
 
+    ...
 
 class TemplateNotFoundError(PystacheError):
     """An exception raised when a template is not found."""
+
     ...
-
-

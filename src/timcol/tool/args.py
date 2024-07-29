@@ -93,21 +93,15 @@ class ParsedArgs:
 
         self.csv_args: ParsedArgs.CsvArgs | None = None
         if self.sub_command == "csv":
-            self.csv_args = ParsedArgs.CsvArgs(
-                args.rate, args.allow_rate_override
-            )
+            self.csv_args = ParsedArgs.CsvArgs(args.rate, args.allow_rate_override)
 
         self.html_args: ParsedArgs.HtmlArgs | None = None
         if self.sub_command == "html":
-            self.html_args = ParsedArgs.HtmlArgs(
-                args.rate, args.allow_rate_override
-            )
+            self.html_args = ParsedArgs.HtmlArgs(args.rate, args.allow_rate_override)
 
         self.start_args: ParsedArgs.StartArgs | None = None
         if self.sub_command in ("start", "swap"):
-            self.start_args = ParsedArgs.StartArgs(
-                args.account, args.description
-            )
+            self.start_args = ParsedArgs.StartArgs(args.account, args.description)
 
         self.backfill_args: ParsedArgs.BackfillArgs | None = None
         if self.sub_command == "backfill":
@@ -145,9 +139,7 @@ def parse_args(raw_args: list[str]) -> ParsedArgs:
     )
 
     csv_parser = subparsers.add_parser("csv", help="CSV-formatted invoice.")
-    csv_parser.add_argument(
-        "rate", type=float, help="Hourly rate to bill in USD."
-    )
+    csv_parser.add_argument("rate", type=float, help="Hourly rate to bill in USD.")
     csv_parser.add_argument(
         "--allow-rate-override",
         action="store_true",
@@ -155,9 +147,7 @@ def parse_args(raw_args: list[str]) -> ParsedArgs:
     )
 
     csv_parser = subparsers.add_parser("html", help="HTML-formatted invoice.")
-    csv_parser.add_argument(
-        "rate", type=float, help="Hourly rate to bill in USD."
-    )
+    csv_parser.add_argument("rate", type=float, help="Hourly rate to bill in USD.")
     csv_parser.add_argument(
         "--allow-rate-override",
         action="store_true",
@@ -198,8 +188,6 @@ def parse_args(raw_args: list[str]) -> ParsedArgs:
         aliases=["sync"],
         help="Execute the file `upload` in the directory the log file is in.",
     )
-    subparsers.add_parser(
-        "log-path", help="Print the path of the log file then exit."
-    )
+    subparsers.add_parser("log-path", help="Print the path of the log file then exit.")
 
     return ParsedArgs(parser.parse_args(raw_args))

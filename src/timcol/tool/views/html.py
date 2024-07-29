@@ -49,6 +49,7 @@ def render(logs: logfile.LogFile, args: ParsedArgs.HtmlArgs) -> None:
         "tasks": tasks,
     }
 
+    assert __package__
     with importlib.resources.open_text(
         __package__, "invoice_template.htm.mustache"
     ) as template:

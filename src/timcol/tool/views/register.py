@@ -14,9 +14,7 @@ def floor_delta(delta: datetime.timedelta) -> datetime.timedelta:
     return datetime.timedelta(seconds=math.floor(delta.total_seconds()))
 
 
-def scale(
-    duration: datetime.timedelta, multiplier: float
-) -> datetime.timedelta:
+def scale(duration: datetime.timedelta, multiplier: float) -> datetime.timedelta:
     return datetime.timedelta(seconds=duration.total_seconds() * multiplier)
 
 

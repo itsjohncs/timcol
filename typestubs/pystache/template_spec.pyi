@@ -10,6 +10,7 @@ from a class that subclasses TemplateSpec.  The "spec" in TemplateSpec
 stands for "special" or "specified" template information.
 
 """
+
 class TemplateSpec:
     """
     A mixin or interface for specifying custom template information.
@@ -43,6 +44,7 @@ class TemplateSpec:
         directory containing the module defining the class.
 
     """
+
     template = ...
     template_encoding = ...
     template_extension = ...
@@ -50,5 +52,3 @@ class TemplateSpec:
     template_path = ...
     template_rel_directory = ...
     template_rel_path = ...
-
-

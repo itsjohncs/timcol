@@ -1,9 +1,0 @@
-{
-  "include": ["./src"],
-  "exclude": ["./venv"],
-  "typingsPath": "./typestubs",
-  "venvPath": ".",
-  "venv": "venv",
-  "typeCheckingMode": "strict",
-  "pythonVersion": "3.11"
-}
