@@ -113,8 +113,8 @@ class ParsedArgs:
 def parse_args(raw_args: list[str]) -> ParsedArgs:
     parser = argparse.ArgumentParser(
         prog=os.environ.get("TIMCOL_NAME", "timcol"),
-        description="Prints time entries.",
-        epilog="TIMCOL_NAME can be set to change the name of timcol in help text.",
+        description="Tracks time in a plaintext ledger format compatible with Ledger-CLI.",
+        epilog="$TIMCOL_NAME can be set to change the name of timcol in help text. This allows easy renaming of timcol via an alias like `alias t='TIMCOL_NAME=t timcol'`",
     )
 
     parser.add_argument(
