@@ -29,11 +29,11 @@ $ timcol reg
 timestamp          duration    account    task
 -----------------  ----------  ---------  ----------------------------
 Jul 29 @ 01:30 PM  0:15:00     Client1    Writing email
-Jul 29 @ 04:30 PM  0:00:00     Client1    Setting up project skeleton.
-Jul 29 @ 04:30 PM  0:00:00     Client1    Implementing milestone 1
-Jul 29 @ 04:30 PM  0:00:05*    Client1    Implementing milestone 1
-Jul 29 SUBTOTAL    0:15:05
-TOTAL TIME         0:15:05
+Jul 29 @ 04:30 PM  0:00:15     Client1    Setting up project skeleton.
+Jul 29 @ 04:30 PM  0:00:20     Client1    Implementing milestone 1
+Jul 29 @ 04:31 PM  0:00:17*    Client1    Implementing milestone 1
+Jul 29 SUBTOTAL    0:15:52
+TOTAL TIME         0:15:52
 ```
 
 Run `timcol edit` to open up the ledger file for direct editing.
