@@ -2,3 +2,4 @@
 venv
 *.code-workspace
 .aider*
+.tox
