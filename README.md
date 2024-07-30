@@ -3,7 +3,7 @@
 [![PyPI - Version](https://img.shields.io/pypi/v/timcol)](https://test.pypi.org/project/timcol)
 [![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/itsjohncs/timcol/tox-tests.yml)](https://github.com/itsjohncs/timcol/actions/workflows/tox-tests.yml)
 [![GitHub License](https://img.shields.io/github/license/itsjohncs/timcol)](https://github.com/itsjohncs/timcol/blob/main/LICENSE)
-[![Ruff](https:d//img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
+[![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
 
 `timcol` helps you track your time in a plaintext format compatible with [Ledger-CLI](https://ledger-cli.org). Similar tools exist within the [plain text accounting ecosystem](https://plaintextaccounting.org/#time-logging).
 
