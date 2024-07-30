@@ -17,6 +17,11 @@ class CheckIn:
         self.task = task
         self.metadata: dict[str, str] = {}
 
+    def __eq__(self, other: object) -> bool:
+        if not isinstance(other, CheckIn):
+            return False
+        return self.__dict__ == other.__dict__
+
     @classmethod
     def parse(cls, directive: str) -> Self | None:
         checkin_match = cls.RE.match(directive)
@@ -38,6 +43,11 @@ class CheckOut:
     def __init__(self, *, timestamp: datetime.datetime) -> None:
         self.timestamp = timestamp
         self.metadata: dict[str, str] = {}
+
+    def __eq__(self, other: object) -> bool:
+        if not isinstance(other, CheckOut):
+            return False
+        return self.__dict__ == other.__dict__
 
     @classmethod
     def parse(cls, directive: str) -> Self | None:

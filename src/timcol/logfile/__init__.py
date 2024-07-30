@@ -34,8 +34,8 @@ def _parse_all_directives(
             assert (
                 current_directive is not None
             ), f"Found metadata outside of directive: {maybe_metadata.group(0)}"
-            current_directive.metadata[maybe_metadata.group(1)] = maybe_metadata.group(
-                2
+            current_directive.metadata[maybe_metadata.group(1).strip()] = (
+                maybe_metadata.group(2).strip()
             )
             continue
 
